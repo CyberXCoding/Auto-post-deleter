@@ -4,8 +4,18 @@ import asyncio
 import glob
 import re
 import random
+
+# ==========================================
+# 🛑 PYTHON 3.14 EVENT LOOP FIX FOR RENDER 🛑
+# ==========================================
+try:
+    loop = asyncio.get_running_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
 from aiohttp import web
-from pyrogram import Client, filters
+from pyrogram import Client, filters, idle
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, ChatPrivileges
 from pyrogram.enums import ParseMode, ChatType
 from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, FloodWait, RPCError
@@ -44,8 +54,10 @@ userbot = None
 
 admin_states = {}
 config_data = {
-    "users": [], "admins": [ADMIN_ID],
-    "fsub_channels": [], "fsub_image": None
+    "users": [], 
+    "admins": [ADMIN_ID],
+    "fsub_channels": [], 
+    "fsub_image": None
 }
 db_lock = asyncio.Lock()
 
@@ -126,15 +138,10 @@ def get_start_menu(bot_username, is_userbot_connected, is_admin):
 
     add_url = f"https://t.me/{bot_username}?startchannel&admin=delete_messages+invite_users+promote_members+manage_chat"
     
-    btn_help = InlineKeyboardButton("Hᴇʟᴘ & Gᴜɪᴅᴇ", callback_data="help_menu")
-    btn_help.custom_emoji = "5364125638275910182"
-    
-    btn_admin = InlineKeyboardButton("Aᴅᴍɪɴ Pᴀɴᴇʟ", callback_data="admin_panel")
-    btn_admin.custom_emoji = "5242625192475244017"
-
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("➕ Aᴅᴅ Tᴏ Cʜᴀɴɴᴇʟ", url=add_url)],
-        [btn_help, btn_admin]
+        [InlineKeyboardButton("📖 Hᴇʟᴘ & Gᴜɪᴅᴇ", callback_data="help_menu"), 
+         InlineKeyboardButton("🛠 Aᴅᴍɪɴ Pᴀɴᴇʟ", callback_data="admin_panel")]
     ])
     return text, keyboard
 
@@ -148,12 +155,20 @@ def get_fsub_ui():
             row = []
     if row: buttons.append(row)
     
-    verify_btn = InlineKeyboardButton("Jᴏɪɴᴇᴅ", callback_data="verify_fsub")
-    verify_btn.custom_emoji = "5249245047043428865"
-    buttons.append([verify_btn])
-    
+    buttons.append([InlineKeyboardButton("✅ Jᴏɪɴᴇᴅ", callback_data="verify_fsub")])
     text = f"{P_HEART} <b>Jᴏɪɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\nPʟᴇᴀsᴇ ᴊᴏɪɴ ᴀʟʟ ᴛʜᴇ ᴄʜᴀɴɴᴇʟs ʙᴇʟᴏᴡ ᴛᴏ ᴄᴏɴᴛɪɴᴜᴇ."
     return text, InlineKeyboardMarkup(buttons)
+
+def get_channels_ui():
+    channels = config_data.get("fsub_channels", [])
+    text = f"📢 <b>Mᴀɴᴀɢᴇ Cʜᴀɴɴᴇʟs</b>\n\nCʟɪᴄᴋ ᴏɴ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ Eᴅɪᴛ, Rᴇᴍᴏᴠᴇ, ᴏʀ Tᴏɢɢʟᴇ ɪᴛs F-Sᴜʙ sᴛᴀᴛᴜs."
+    btns = []
+    for ch in channels:
+        status_dot = "🟢" if ch.get("fsub", True) else "🔴"
+        btns.append([InlineKeyboardButton(f"{status_dot} {ch['name']}", callback_data=f"chedit_{ch['id']}")])
+    btns.append([InlineKeyboardButton("➕ Aᴅᴅ Nᴇᴡ Cʜᴀɴɴᴇʟ", callback_data="ch_add")])
+    btns.append([InlineKeyboardButton("⬅️ Bᴀᴄᴋ ᴛᴏ Aᴅᴍɪɴ", callback_data="admin_panel")])
+    return text, InlineKeyboardMarkup(btns)
 
 async def check_user_fsub(client, user_id):
     channels = [ch for ch in config_data.get("fsub_channels", []) if ch.get("fsub", True)]
@@ -166,6 +181,7 @@ async def check_user_fsub(client, user_id):
         except: return False
     return True
 
+# --- COMMAND HANDLERS ---
 @bot.on_message(filters.command("start") & filters.private)
 async def start_cmd(client: Client, message: Message):
     admin_states[message.from_user.id] = {"step": "IDLE"}
@@ -228,6 +244,7 @@ async def help_menu_callback(client, callback_query):
         f"10s - 10 Sᴇᴄᴏɴᴅs | 1m - 1 Mɪɴᴜᴛᴇ\n"
         f"15m - 15 Mɪɴᴜᴛᴇs | 2h - 2 Hᴏᴜʀs\n"
         f"1d - 1 Dᴀʏ\n</blockquote>\n"
+        f"<b>➜ Usᴇ /id ᴛᴏ ɢᴇᴛ ᴛʜᴇ Cʜᴀᴛ Iᴅ.</b>\n\n"
         f"<b>Bᴜʟᴋ Dᴇʟᴇᴛᴇʀ (Oʟᴅ Mᴇssᴀɢᴇs):</b>\n"
         f"➜ <code>/delall</code> - Wɪᴘᴇs ᴇᴠᴇʀʏᴛʜɪɴɢ ɪɴ ᴄʜᴀᴛ\n"
         f"➜ <code>/delfrom</code> - (Rᴇᴘʟʏ) Wɪᴘᴇs ғʀᴏᴍ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ ᴀʟʟ ɴᴇᴡᴇʀ ᴏɴᴇs."
@@ -245,9 +262,10 @@ async def main_menu_callback(client, callback_query):
 
 @bot.on_callback_query(filters.regex("admin_panel"))
 async def admin_panel_callback(client, callback_query):
-    if not is_bot_admin(callback_query.from_user.id): return await callback_query.answer("⛔️ Aᴅᴍɪɴ ᴏɴʟʏ!", show_alert=True)
-    admin_states[callback_query.from_user.id] = {"step": "IDLE"}
+    if not is_bot_admin(callback_query.from_user.id): 
+        return await callback_query.answer("⛔️ Aᴅᴍɪɴ ᴏɴʟʏ!", show_alert=True)
     
+    admin_states[callback_query.from_user.id] = {"step": "IDLE"}
     text = f"{P_ADMIN} <b>Aᴅᴍɪɴ Pᴀɴᴇʟ</b> {P_DIAMOND}\n\nMᴀɴᴀɢᴇ Usᴇʀʙᴏᴛ, Fᴏʀᴄᴇ Sᴜʙsᴄʀɪʙᴇ, ᴀɴᴅ Cᴏ-Aᴅᴍɪɴs."
     buttons = [
         [InlineKeyboardButton("🔑 Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ", callback_data="ub_menu")],
@@ -276,8 +294,7 @@ async def ub_menu_callback(client, callback_query):
 async def ub_clear_conf_cb(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("✅ Yᴇs, Cʟᴇᴀʀ Sᴇssɪᴏɴ", callback_data="ub_clear_yes")],
-        [InlineKeyboardButton("❌ Nᴏ, Cᴀɴᴄᴇʟ", callback_data="ub_menu")]
+        [InlineKeyboardButton("✅ Yᴇs, Cʟᴇᴀʀ", callback_data="ub_clear_yes"), InlineKeyboardButton("❌ Nᴏ, Cᴀɴᴄᴇʟ", callback_data="ub_menu")]
     ])
     await callback_query.message.edit_text("⚠️ <b>Aʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ Cʟᴇᴀʀ Usᴇʀʙᴏᴛ Dᴀᴛᴀ ᴀɴᴅ Lᴏɢᴏᴜᴛ?</b>", reply_markup=kb, parse_mode=ParseMode.HTML)
 
@@ -305,17 +322,6 @@ async def setup_userbot_callback(client, callback_query):
     admin_states[callback_query.from_user.id] = {"step": "ASK_API_ID"}
     await callback_query.message.edit_text("📝 **Sᴛᴇᴘ 1:** Sᴇɴᴅ ʏᴏᴜʀ **API ID** (Nᴜᴍʙᴇʀs ᴏɴʟʏ).\n\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
 
-def get_channels_ui():
-    channels = config_data.get("fsub_channels", [])
-    text = f"📢 <b>Mᴀɴᴀɢᴇ Cʜᴀɴɴᴇʟs</b>\n\nCʟɪᴄᴋ ᴏɴ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ Eᴅɪᴛ, Rᴇᴍᴏᴠᴇ, ᴏʀ Tᴏɢɢʟᴇ ɪᴛs F-Sᴜʙ sᴛᴀᴛᴜs."
-    btns = []
-    for ch in channels:
-        status_dot = "🟢" if ch.get("fsub", True) else "🔴"
-        btns.append([InlineKeyboardButton(f"{status_dot} {ch['name']}", callback_data=f"chedit_{ch['id']}")])
-    btns.append([InlineKeyboardButton("➕ Aᴅᴅ Nᴇᴡ Cʜᴀɴɴᴇʟ", callback_data="ch_add")])
-    btns.append([InlineKeyboardButton("⬅️ Bᴀᴄᴋ ᴛᴏ Aᴅᴍɪɴ", callback_data="admin_panel")])
-    return text, InlineKeyboardMarkup(btns)
-
 @bot.on_callback_query(filters.regex("ch_menu"))
 async def ch_menu_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
@@ -331,7 +337,6 @@ async def ch_edit_cb(client, callback_query):
     if not ch: return await callback_query.answer("Cʜᴀɴɴᴇʟ ɴᴏᴛ ғᴏᴜɴᴅ!", show_alert=True)
     
     fsub_text = "ON" if ch.get("fsub", True) else "OFF"
-    
     text = f"📢 <b>Eᴅɪᴛ Cʜᴀɴɴᴇʟ:</b> {ch['name']}\n\nFᴏʀᴄᴇ Sᴜʙsᴄʀɪʙᴇ ɪs <b>{fsub_text}</b> ғᴏʀ ᴛʜɪs ᴄʜᴀɴɴᴇʟ."
     btns = [
         [InlineKeyboardButton(f"🔄 Tᴏɢɢʟᴇ F-Sᴜʙ: {fsub_text}", callback_data=f"chtog_{ch_id}")],
@@ -379,8 +384,7 @@ async def ch_delconf_cb(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     ch_id = int(callback_query.matches[0].group(1))
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("✅ Yᴇs, Rᴇᴍᴏᴠᴇ", callback_data=f"chdel_{ch_id}")],
-        [InlineKeyboardButton("❌ Nᴏ, Cᴀɴᴄᴇʟ", callback_data=f"chedit_{ch_id}")]
+        [InlineKeyboardButton("✅ Yᴇs, Rᴇᴍᴏᴠᴇ", callback_data=f"chdel_{ch_id}"), InlineKeyboardButton("❌ Nᴏ, Cᴀɴᴄᴇʟ", callback_data=f"chedit_{ch_id}")]
     ])
     await callback_query.message.edit_text("⚠️ <b>Aʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ʀᴇᴍᴏᴠᴇ ᴛʜɪs ᴄʜᴀɴɴᴇʟ?</b>", reply_markup=kb, parse_mode=ParseMode.HTML)
 
@@ -412,6 +416,7 @@ async def manage_admins_cb(client, callback_query):
     admin_states[callback_query.from_user.id] = {"step": "ASK_ADMIN_ID"}
     await callback_query.message.edit_text(f"👮 **Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:**\n{admin_list}\n\n👉 **Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.**\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
 
+# --- DYNAMIC MESSAGE HANDLER FOR ADMIN STATES ---
 @bot.on_message(filters.private & ~filters.command(["start", "delall", "delfrom", "setdelay", "set_delay"]))
 async def admin_steps_handler(client: Client, message: Message):
     user_id = message.from_user.id
@@ -520,12 +525,16 @@ async def admin_steps_handler(client: Client, message: Message):
             admin_states[user_id]["step"] = "IDLE"
             await message.reply_text(f"❌ Eʀʀᴏʀ: {e}")
 
+
+# --- DELETION LOGIC ---
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
+    
     text = message.text or message.caption or ""
     match = re.search(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", text, re.IGNORECASE)
     if not match: return
+    
     time_str = match.group(1)
     delay_sec = parse_time(time_str)
     
@@ -654,27 +663,23 @@ async def del_from_command(client: Client, message: Message):
     try: await status_msg.delete()
     except: pass
 
-# --- DUMMY WEB SERVER FOR RENDER.COM ---
+
+# --- RENDER WEB SERVER ---
 async def web_server():
-    async def handle(request):
-        return web.Response(text="Bot is running smoothly!")
+    async def handle(request): return web.Response(text="Bot is running!")
     app = web.Application()
     app.router.add_get('/', handle)
     runner = web.AppRunner(app)
     await runner.setup()
     port = int(os.environ.get("PORT", 8080))
-    site = web.TCPSite(runner, '0.0.0.0', port)
-    await site.start()
-    print(f"Dummy Web Server started on port {port}")
+    await web.TCPSite(runner, '0.0.0.0', port).start()
 
 async def main():
-    await web_server()  # Render needs this!
+    await web_server()
     await start_userbot_if_configured()
     await bot.start()
-    print("✅ Bot is Online & Render-Ready!")
-    import pyrogram
-    await pyrogram.idle()
+    print("✅ Bot is Online!")
+    await idle()
 
 if __name__ == "__main__":
-    bot.run(main())
-EOF
+    loop.run_until_complete(main())
