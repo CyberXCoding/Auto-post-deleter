@@ -16,7 +16,7 @@ except RuntimeError:
 
 from aiohttp import web
 from pyrogram import Client, filters, idle
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, ChatPrivileges
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, ChatPrivileges, ChatMemberUpdated
 from pyrogram.enums import ParseMode, ChatType
 from pyrogram.errors import SessionPasswordNeeded, FloodWait, UserAlreadyParticipant
 
@@ -216,6 +216,48 @@ async def ensure_userbot_admin(client: Client, chat_id: int, reply_msg: Message 
     except Exception as e: 
         print(f"Global ensure_userbot_admin error: {e}")
         return False
+
+# --- AUTO JOIN & PROMOTE EVENT LISTENERS ---
+@bot.on_chat_join_request()
+async def auto_approve_userbot_join(client: Client, request):
+    """Automatically approves the Userbot if the channel has 'Approve New Members' enabled."""
+    global userbot
+    if not userbot or not userbot.is_connected: return
+    try:
+        ub_info = await userbot.get_me()
+        if request.from_user.id == ub_info.id:
+            await client.approve_chat_join_request(request.chat.id, request.from_user.id)
+            print(f"✅ Auto-approved Userbot join request in {request.chat.title}")
+    except Exception as e:
+        pass
+
+@bot.on_chat_member_updated()
+async def auto_promote_on_join(client: Client, update: ChatMemberUpdated):
+    """Listens for the Userbot joining the channel and instantly promotes it to Admin."""
+    global userbot
+    if not userbot or not userbot.is_connected: return
+    try:
+        # We only care about new members joining or being added
+        if not update.new_chat_member: return
+        
+        ub_info = await userbot.get_me()
+        
+        # Check if the user who got updated is our Userbot
+        if update.new_chat_member.user.id == ub_info.id:
+            status = update.new_chat_member.status.name
+            # If the userbot just became a regular member
+            if status in ["MEMBER", "RESTRICTED"]:
+                await client.promote_chat_member(
+                    update.chat.id,
+                    ub_info.id,
+                    privileges=ChatPrivileges(
+                        can_delete_messages=True,
+                        can_manage_chat=True
+                    )
+                )
+                print(f"🌟 Auto-promoted Userbot to Admin in {update.chat.title}")
+    except Exception as e:
+        print(f"Auto-promote event error: {e}")
 
 
 # --- UI GENERATORS ---
