@@ -32,7 +32,7 @@ clean_journals()
 # ==========================================
 API_ID = 34203777
 API_HASH = "28879e1da5422e2d7a2f2beb187d465e"
-BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # Updated Token
+BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # 🆕 Updated Token
 ADMIN_ID = 8157285805  
 
 # 💎 PREMIUM EMOJIS (HTML Format for Text Messages)
@@ -125,11 +125,15 @@ async def delayed_delete(chat_id, message_id, delay_seconds):
 # --- UI GENERATORS ---
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
-        f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ Bᴏᴛ</b> {P_STAR}\n\n"
-        f"<i>{P_SPARKLES} ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇ ᴄʜᴀɴɴᴇʟ ᴘᴏsᴛs ᴀғᴛᴇʀ ᴀ sᴘᴇᴄɪғɪᴇᴅ ᴅᴇʟᴀʏ</i>\n\n"
-        f"<b>Hᴏᴡ Tᴏ Usᴇ:</b>\n"
-        f"1. ᴍᴀᴋᴇ ᴍᴇ <b>ᴀᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ\n"
-        f"2. Rᴇᴘʟʏ ᴛᴏ ᴀ ᴘᴏsᴛ ᴏʀ ᴀᴅᴅ /setdelay ɪɴ ᴘᴏsᴛ ᴛᴇxᴛ!\n\n"
+        f"{P_EPIC} <b>Tʜᴇ Uʟᴛɪᴍᴀᴛᴇ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
+        f"<i>I ᴀᴍ ᴀ ᴘᴏᴡᴇʀғᴜʟ ʙᴏᴛ ᴅᴇsɪɢɴᴇᴅ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ ᴘʀᴏғᴇssɪᴏɴᴀʟ.</i>\n\n"
+        f"<b>⚡ Mʏ Pᴏᴡᴇʀs:</b>\n"
+        f"➜ <b>Bᴜʟᴋ Wɪᴘᴇ:</b> Dᴇʟᴇᴛᴇ ᴇɴᴛɪʀᴇ ᴄʜᴀᴛ ʜɪsᴛᴏʀɪᴇs ɪɴ sᴇᴄᴏɴᴅs.\n"
+        f"➜ <b>Sᴍᴀʀᴛ Wɪᴘᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴘᴏsᴛs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴍᴇssᴀɢᴇ ᴅᴏᴡɴᴡᴀʀᴅs.\n"
+        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛs ᴛᴏ ᴠᴀɴɪsʜ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
+        f"<b>Hᴏᴡ ᴛᴏ Sᴛᴀʀᴛ:</b>\n"
+        f"1. Aᴅᴅ ᴍᴇ ᴀs <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
+        f"2. Rᴇᴀᴅ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ!\n\n"
     )
     
     if is_admin:
@@ -235,19 +239,18 @@ async def verify_fsub_callback(client, callback_query):
 @bot.on_callback_query(filters.regex("help_menu"))
 async def help_menu_callback(client, callback_query):
     text = (
-        f"{P_HELP} <b>Gᴜɪᴅᴇ & Cᴏᴍᴍᴀɴᴅs</b> {P_DIAMOND}\n\n"
-        f"<b>1. Sɪɴɢʟᴇ Pᴏsᴛ Tɪᴍᴇʀ (Iɴ Tᴇxᴛ):</b>\n"
-        f"➜ Iɴᴄʟᴜᴅᴇ <code>/setdelay 10s</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴ ʏᴏᴜʀ ᴘᴏsᴛ ᴛᴏ ᴀᴜᴛᴏ-ᴅᴇʟᴇᴛᴇ *ᴛʜᴀᴛ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ*.\n\n"
-        f"<b>2. Sɪɴɢʟᴇ Pᴏsᴛ Tɪᴍᴇʀ (Rᴇᴘʟʏ):</b>\n"
-        f"➜ <b>Rᴇᴘʟʏ</b> ᴛᴏ ᴀɴʏ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ <code>/setdelay 1m</code> ᴛᴏ ᴅᴇʟᴇᴛᴇ ɪᴛ.\n\n"
-        f"<blockquote expandable><b>{get_p_lightning()} Dᴇʟᴀʏ Fᴏʀᴍᴀᴛ Exᴀᴍᴘʟᴇs:</b>\n\n"
-        f"10s - 10 Sᴇᴄᴏɴᴅs | 1m - 1 Mɪɴᴜᴛᴇ\n"
-        f"15m - 15 Mɪɴᴜᴛᴇs | 2h - 2 Hᴏᴜʀs\n"
-        f"1d - 1 Dᴀʏ\n</blockquote>\n"
-        f"<b>➜ Usᴇ /id ᴛᴏ ɢᴇᴛ ᴛʜᴇ Cʜᴀᴛ Iᴅ.</b>\n\n"
-        f"<b>Bᴜʟᴋ Dᴇʟᴇᴛᴇʀ (Oʟᴅ Mᴇssᴀɢᴇs):</b>\n"
-        f"➜ <code>/delall</code> - Wɪᴘᴇs ᴇᴠᴇʀʏᴛʜɪɴɢ ɪɴ ᴄʜᴀᴛ\n"
-        f"➜ <code>/delfrom</code> - (Rᴇᴘʟʏ) Wɪᴘᴇs ғʀᴏᴍ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ ᴀʟʟ ɴᴇᴡᴇʀ ᴏɴᴇs."
+        f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
+        f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
+        f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ's ᴄᴀᴘᴛɪᴏɴ.\n"
+        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code> ᴛᴏ ᴅᴇʟᴇᴛᴇ ɪᴛ ʟᴀᴛᴇʀ.\n\n"
+        f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ (Wɪᴘᴇ Hɪsᴛᴏʀʏ):</b>\n"
+        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴡɪᴘᴇs <b>ᴀʟʟ ᴍᴇssᴀɢᴇs</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
+        f"➜ <code>/delfrom</code> - Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ᴛʜɪs. Iᴛ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ɴᴇᴡᴇʀ ᴍᴇssᴀɢᴇs</b> ʙᴇʟᴏᴡ ɪᴛ.\n\n"
+        f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏ Fᴏʀᴍᴀᴛs:</b>\n\n"
+        f"• <code>10s</code> - 10 Sᴇᴄᴏɴᴅs\n"
+        f"• <code>5m</code>  - 5 Mɪɴᴜᴛᴇs\n"
+        f"• <code>2h</code>  - 2 Hᴏᴜʀs\n"
+        f"• <code>1d</code>  - 1 Dᴀʏ\n</blockquote>"
     )
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ Bᴀᴄᴋ", callback_data="main_menu")]])
     await callback_query.message.edit_text(text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
@@ -296,7 +299,7 @@ async def ub_clear_conf_cb(client, callback_query):
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ Yᴇs, Cʟᴇᴀʀ", callback_data="ub_clear_yes"), InlineKeyboardButton("❌ Nᴏ, Cᴀɴᴄᴇʟ", callback_data="ub_menu")]
     ])
-    await callback_query.message.edit_text("⚠️ <b>Aʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ Cʟᴇᴀʀ Usᴇʀʙᴏᴛ Dᴀᴛᴀ ᴀɴᴅ Lᴏɢᴏᴜᴛ?</b>", reply_markup=kb, parse_mode=ParseMode.HTML)
+    await callback_query.message.edit_text("⚠️ <b>Aʀᴇ ʏᴏᴜ sᴜʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴄʟᴇᴀʀ Usᴇʀʙᴏᴛ ᴅᴀᴛᴀ ᴀɴᴅ ʟᴏɢᴏᴜᴛ?</b>", reply_markup=kb, parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("ub_clear_yes"))
 async def ub_clear_yes_cb(client, callback_query):
@@ -320,7 +323,7 @@ async def ub_clear_yes_cb(client, callback_query):
 async def setup_userbot_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     admin_states[callback_query.from_user.id] = {"step": "ASK_API_ID"}
-    await callback_query.message.edit_text("📝 **Sᴛᴇᴘ 1:** Sᴇɴᴅ ʏᴏᴜʀ **API ID** (Nᴜᴍʙᴇʀs ᴏɴʟʏ).\n\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
+    await callback_query.message.edit_text("📝 <b>Sᴛᴇᴘ 1:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>API ID</b> (Nᴜᴍʙᴇʀs ᴏɴʟʏ).<br><br><i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("ch_menu"))
 async def ch_menu_callback(client, callback_query):
@@ -401,20 +404,20 @@ async def ch_del_cb(client, callback_query):
 async def ch_add_cb(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     admin_states[callback_query.from_user.id] = {"step": "ASK_CH_ADD"}
-    await callback_query.message.edit_text("📢 **Sᴇɴᴅ ᴛʜᴇ Cʜᴀɴɴᴇʟ Usᴇʀɴᴀᴍᴇ (e.g. @channel) ᴏʀ ID (e.g. -100...).**\n\n⚠️ *Mᴀᴋᴇ ᴍᴇ ᴀᴅᴍɪɴ ɪɴ ɪᴛ ғɪʀsᴛ!*\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
+    await callback_query.message.edit_text("📢 <b>Sᴇɴᴅ ᴛʜᴇ Cʜᴀɴɴᴇʟ Usᴇʀɴᴀᴍᴇ (e.g. @channel) ᴏʀ ID (e.g. -100...).</b>\n\n⚠️ <i>Mᴀᴋᴇ ᴍᴇ ᴀᴅᴍɪɴ ɪɴ ɪᴛ ғɪʀsᴛ!</i>\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("fsub_image_set"))
 async def fsub_img_cb(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     admin_states[callback_query.from_user.id] = {"step": "ASK_FSUB_IMG"}
-    await callback_query.message.edit_text("🖼 **Sᴇɴᴅ ᴀ ᴘʜᴏᴛᴏ** ᴛᴏ sᴇᴛ ᴀs Fᴏʀᴄᴇ Sᴜʙ ʙᴀᴄᴋɢʀᴏᴜɴᴅ. (Sᴇɴᴅ 'off' ᴛᴏ ʀᴇᴍᴏᴠᴇ).\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
+    await callback_query.message.edit_text("🖼 <b>Sᴇɴᴅ ᴀ ᴘʜᴏᴛᴏ</b> ᴛᴏ sᴇᴛ ᴀs Fᴏʀᴄᴇ Sᴜʙ ʙᴀᴄᴋɢʀᴏᴜɴᴅ. (Sᴇɴᴅ 'off' ᴛᴏ ʀᴇᴍᴏᴠᴇ).\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("manage_admins"))
 async def manage_admins_cb(client, callback_query):
     if callback_query.from_user.id != ADMIN_ID: return
     admin_list = "\n".join([f"<code>{aid}</code>" for aid in config_data.get("admins", [])])
     admin_states[callback_query.from_user.id] = {"step": "ASK_ADMIN_ID"}
-    await callback_query.message.edit_text(f"👮 **Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:**\n{admin_list}\n\n👉 **Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.**\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
+    await callback_query.message.edit_text(f"👮 <b>Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:</b>\n{admin_list}\n\n👉 <b>Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.</b>\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
 @bot.on_message(filters.private & ~filters.command(["start", "delall", "delfrom", "setdelay", "set_delay"]))
 async def admin_steps_handler(client: Client, message: Message):
@@ -441,7 +444,7 @@ async def admin_steps_handler(client: Client, message: Message):
             text, kb = get_channels_ui()
             await message.reply_text(f"{P_CHECK} <b>{chat.title}</b> ᴀᴅᴅᴇᴅ sᴜᴄᴄᴇssғᴜʟʟʏ!\nIᴛ ʜᴀs ʙᴇᴇɴ sᴇᴛ ᴛᴏ F-Sᴜʙ <b>ON</b>.", reply_markup=kb, parse_mode=ParseMode.HTML)
         except Exception as e:
-            await message.reply_text(f"❌ Cᴏᴜʟᴅ ɴᴏᴛ ᴀᴅᴅ ᴄʜᴀɴɴᴇʟ. Pʟᴇᴀsᴇ ᴄʜᴇᴄᴋ ɪғ ɪᴛ's ᴀ ᴠᴀʟɪᴅ ID/Usᴇʀɴᴀᴍᴇ ᴀɴᴅ ɪғ I'ᴍ ᴀɴ ᴀᴅᴍɪɴ ᴡɪᴛʜ 'Iɴᴠɪᴛᴇ Usᴇʀs' ᴘᴇʀᴍɪssɪᴏɴ.\n\nSᴇɴᴅ ᴀɢᴀɪɴ ᴏʀ ᴛʏᴘᴇ /start ᴛᴏ ᴄᴀɴᴄᴇʟ.", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ <b>Cᴏᴜʟᴅ ɴᴏᴛ ᴀᴅᴅ ᴄʜᴀɴɴᴇʟ.</b> Pʟᴇᴀsᴇ ᴄʜᴇᴄᴋ ɪғ ɪᴛ's ᴀ ᴠᴀʟɪᴅ ID/Usᴇʀɴᴀᴍᴇ ᴀɴᴅ ɪғ I'ᴍ ᴀɴ ᴀᴅᴍɪɴ ᴡɪᴛʜ 'Iɴᴠɪᴛᴇ Usᴇʀs' ᴘᴇʀᴍɪssɪᴏɴ.\n\nSᴇɴᴅ ᴀɢᴀɪɴ ᴏʀ ᴛʏᴘᴇ /start ᴛᴏ ᴄᴀɴᴄᴇʟ.", parse_mode=ParseMode.HTML)
 
     elif state == "ASK_FSUB_IMG":
         if message.text and message.text.lower() == "off":
@@ -465,10 +468,10 @@ async def admin_steps_handler(client: Client, message: Message):
             if target_id in admins:
                 if target_id == ADMIN_ID: return await message.reply_text("❌ Yᴏᴜ ᴄᴀɴ'ᴛ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ Oᴡɴᴇʀ.", parse_mode=ParseMode.HTML)
                 admins.remove(target_id)
-                msg = f"➖ Rᴇᴍᴏᴠᴇᴅ Aᴅᴍɪɴ: `{target_id}`"
+                msg = f"➖ Rᴇᴍᴏᴠᴇᴅ Aᴅᴍɪɴ: <code>{target_id}</code>"
             else:
                 admins.append(target_id)
-                msg = f"➕ Aᴅᴅᴇᴅ Nᴇᴡ Aᴅᴍɪɴ: `{target_id}`"
+                msg = f"➕ Aᴅᴅᴇᴅ Nᴇᴡ Aᴅᴍɪɴ: <code>{target_id}</code>"
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
             await message.reply_text(f"{P_CHECK} {msg}", parse_mode=ParseMode.HTML)
@@ -478,15 +481,15 @@ async def admin_steps_handler(client: Client, message: Message):
         try:
             config_data["api_id"] = int(message.text.strip())
             admin_states[user_id]["step"] = "ASK_API_HASH"
-            await message.reply_text("📝 **Sᴛᴇᴘ 2:** Sᴇɴᴅ ʏᴏᴜʀ **API HASH**.", parse_mode=ParseMode.HTML)
+            await message.reply_text("📝 <b>Sᴛᴇᴘ 2:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>API HASH</b>.", parse_mode=ParseMode.HTML)
         except: await message.reply_text("❌ Nᴜᴍʙᴇʀs ᴏɴʟʏ ғᴏʀ API ID.", parse_mode=ParseMode.HTML)
     elif state == "ASK_API_HASH":
         config_data["api_hash"] = message.text.strip()
         admin_states[user_id]["step"] = "ASK_PHONE"
-        await message.reply_text("📝 **Sᴛᴇᴘ 3:** Sᴇɴᴅ **Pʜᴏɴᴇ Nᴜᴍʙᴇʀ**.", parse_mode=ParseMode.HTML)
+        await message.reply_text("📝 <b>Sᴛᴇᴘ 3:</b> Sᴇɴᴅ <b>Pʜᴏɴᴇ Nᴜᴍʙᴇʀ</b>.", parse_mode=ParseMode.HTML)
     elif state == "ASK_PHONE":
         config_data["phone"] = message.text.strip()
-        await message.reply_text(f"{get_p_lightning()} `Cᴏɴɴᴇᴄᴛɪɴɢ...`", parse_mode=ParseMode.HTML)
+        await message.reply_text(f"{get_p_lightning()} <code>Cᴏɴɴᴇᴄᴛɪɴɢ...</code>", parse_mode=ParseMode.HTML)
         try:
             global userbot
             if userbot: await userbot.disconnect()
@@ -495,34 +498,34 @@ async def admin_steps_handler(client: Client, message: Message):
             sent_code = await userbot.send_code(config_data["phone"])
             config_data["phone_code_hash"] = sent_code.phone_code_hash
             admin_states[user_id]["step"] = "ASK_OTP"
-            await message.reply_text("📩 **Sᴛᴇᴘ 4:** Sᴇɴᴅ OTP **ᴡɪᴛʜ sᴘᴀᴄᴇs**.", parse_mode=ParseMode.HTML)
+            await message.reply_text("📩 <b>Sᴛᴇᴘ 4:</b> Sᴇɴᴅ OTP <b>ᴡɪᴛʜ sᴘᴀᴄᴇs</b>.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
     elif state == "ASK_OTP":
         otp = message.text.replace(" ", "")
-        await message.reply_text(f"{get_p_lightning()} `Vᴇʀɪғʏɪɴɢ OTP...`", parse_mode=ParseMode.HTML)
+        await message.reply_text(f"{get_p_lightning()} <code>Vᴇʀɪғʏɪɴɢ OTP...</code>", parse_mode=ParseMode.HTML)
         try:
             await userbot.sign_in(config_data["phone"], config_data["phone_code_hash"], otp)
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"{P_CHECK} **Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!**", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"{P_CHECK} <b>Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!</b>", parse_mode=ParseMode.HTML)
         except SessionPasswordNeeded:
             admin_states[user_id]["step"] = "ASK_PASSWORD"
-            await message.reply_text("🔐 **Sᴛᴇᴘ 5:** Sᴇɴᴅ ʏᴏᴜʀ **2FA Pᴀssᴡᴏʀᴅ**.", parse_mode=ParseMode.HTML)
+            await message.reply_text("🔐 <b>Sᴛᴇᴘ 5:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>2FA Pᴀssᴡᴏʀᴅ</b>.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
     elif state == "ASK_PASSWORD":
-        await message.reply_text(f"{get_p_lightning()} `Vᴇʀɪғʏɪɴɢ Pᴀssᴡᴏʀᴅ...`", parse_mode=ParseMode.HTML)
+        await message.reply_text(f"{get_p_lightning()} <code>Vᴇʀɪғʏɪɴɢ Pᴀssᴡᴏʀᴅ...</code>", parse_mode=ParseMode.HTML)
         try:
             await userbot.check_password(message.text)
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"{P_CHECK} **Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!**", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"{P_CHECK} <b>Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!</b>", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
@@ -590,7 +593,7 @@ async def del_all_command(client: Client, message: Message):
     if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
     if not await ensure_userbot_admin(client, message, message.chat.id): return
 
-    status_msg = await message.reply_text(f"{get_p_lightning()} `Wɪᴘɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...`", parse_mode=ParseMode.HTML)
+    status_msg = await message.reply_text(f"{get_p_lightning()} <code>Wɪᴘɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
     count, chunk = 0, []
     
     try:
@@ -615,7 +618,7 @@ async def del_all_command(client: Client, message: Message):
             await message.delete()
         except: pass
     except Exception as e:
-        await status_msg.edit_text(f"⚠️ Sᴛᴏᴘᴘᴇᴅ: {e}", parse_mode=ParseMode.HTML)
+        await status_msg.edit_text(f"⚠️ Sᴛᴏᴘᴘᴇᴅ: <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 @bot.on_message(filters.command("delfrom") & (filters.group | filters.channel))
 async def del_from_command(client: Client, message: Message):
@@ -624,14 +627,14 @@ async def del_from_command(client: Client, message: Message):
     if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
     
     if not message.reply_to_message:
-        msg = await message.reply_text("❌ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ `/delfrom`.", parse_mode=ParseMode.HTML)
+        msg = await message.reply_text("❌ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ <code>/delfrom</code>.", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg.delete(); await message.delete()
         except: pass
         return
         
     if not await ensure_userbot_admin(client, message, message.chat.id): return
-    status_msg = await message.reply_text(f"{get_p_lightning()} `Dᴇʟᴇᴛɪɴɢ sᴇʟᴇᴄᴛᴇᴅ ᴍᴇssᴀɢᴇs...`", parse_mode=ParseMode.HTML)
+    status_msg = await message.reply_text(f"{get_p_lightning()} <code>Dᴇʟᴇᴛɪɴɢ sᴇʟᴇᴄᴛᴇᴅ ᴍᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
     
     ids_to_delete = list(range(message.reply_to_message.id, message.id + 1))
     count, chunk = 0, []
@@ -657,7 +660,6 @@ async def del_from_command(client: Client, message: Message):
     await asyncio.sleep(5)
     try: await status_msg.delete()
     except: pass
-
 
 # --- RENDER WEB SERVER ---
 async def web_server():
