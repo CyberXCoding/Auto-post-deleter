@@ -32,7 +32,7 @@ clean_journals()
 # ==========================================
 API_ID = 34203777
 API_HASH = "28879e1da5422e2d7a2f2beb187d465e"
-BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # 🆕 Updated Token
+BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # NEW TOKEN ADDED
 ADMIN_ID = 8157285805  
 
 # 💎 PREMIUM EMOJIS (HTML Format for Text Messages)
@@ -57,7 +57,8 @@ config_data = {
     "users": [], 
     "admins": [ADMIN_ID],
     "fsub_channels": [], 
-    "fsub_image": None
+    "fsub_image": None,
+    "session_string": None
 }
 db_lock = asyncio.Lock()
 
@@ -79,13 +80,18 @@ async def save_config():
 async def start_userbot_if_configured():
     global userbot
     await load_config()
-    if "api_id" in config_data and "api_hash" in config_data:
-        try:
-            print("Starting saved Userbot session...")
+    try:
+        if config_data.get("session_string"):
+            print("Starting Userbot via Session String...")
+            userbot = Client("userbot", session_string=config_data["session_string"], in_memory=True)
+            await userbot.start()
+            return True
+        elif config_data.get("api_id") and config_data.get("api_hash") and os.path.exists("userbot.session"):
+            print("Starting saved Userbot session file...")
             userbot = Client("userbot", api_id=config_data["api_id"], api_hash=config_data["api_hash"])
             await userbot.start()
             return True
-        except Exception as e: print(f"Failed to start userbot: {e}")
+    except Exception as e: print(f"Failed to start userbot: {e}")
     return False
 
 def parse_time(time_str):
@@ -125,15 +131,15 @@ async def delayed_delete(chat_id, message_id, delay_seconds):
 # --- UI GENERATORS ---
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
-        f"{P_EPIC} <b>Tʜᴇ Uʟᴛɪᴍᴀᴛᴇ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
-        f"<i>I ᴀᴍ ᴀ ᴘᴏᴡᴇʀғᴜʟ ʙᴏᴛ ᴅᴇsɪɢɴᴇᴅ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ ᴘʀᴏғᴇssɪᴏɴᴀʟ.</i>\n\n"
-        f"<b>⚡ Mʏ Pᴏᴡᴇʀs:</b>\n"
-        f"➜ <b>Bᴜʟᴋ Wɪᴘᴇ:</b> Dᴇʟᴇᴛᴇ ᴇɴᴛɪʀᴇ ᴄʜᴀᴛ ʜɪsᴛᴏʀɪᴇs ɪɴ sᴇᴄᴏɴᴅs.\n"
-        f"➜ <b>Sᴍᴀʀᴛ Wɪᴘᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴘᴏsᴛs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴍᴇssᴀɢᴇ ᴅᴏᴡɴᴡᴀʀᴅs.\n"
-        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛs ᴛᴏ ᴠᴀɴɪsʜ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
+        f"{P_EPIC} <b>Pʀᴏ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
+        f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
+        f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
+        f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
+        f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ ᴀɴᴅ ʙᴇʟᴏᴡ.\n"
+        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ ᴘᴏsᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
         f"<b>Hᴏᴡ ᴛᴏ Sᴛᴀʀᴛ:</b>\n"
         f"1. Aᴅᴅ ᴍᴇ ᴀs <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
-        f"2. Rᴇᴀᴅ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ!\n\n"
+        f"2. Rᴇᴀᴅ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs!\n\n"
     )
     
     if is_admin:
@@ -142,12 +148,21 @@ def get_start_menu(bot_username, is_userbot_connected, is_admin):
 
     add_url = f"https://t.me/{bot_username}?startchannel&admin=delete_messages+invite_users+promote_members+manage_chat"
     
-    keyboard = InlineKeyboardMarkup([
+    btn_help = InlineKeyboardButton("Hᴇʟᴘ & Gᴜɪᴅᴇ", callback_data="help_menu")
+    btn_help.custom_emoji = "5364125638275910182"
+
+    kb_buttons = [
         [InlineKeyboardButton("➕ Aᴅᴅ Tᴏ Cʜᴀɴɴᴇʟ", url=add_url)],
-        [InlineKeyboardButton("📖 Hᴇʟᴘ & Gᴜɪᴅᴇ", callback_data="help_menu"), 
-         InlineKeyboardButton("🛠 Aᴅᴍɪɴ Pᴀɴᴇʟ", callback_data="admin_panel")]
-    ])
-    return text, keyboard
+        [btn_help]
+    ]
+
+    # ONLY SHOW ADMIN PANEL TO ADMINS
+    if is_admin:
+        btn_admin = InlineKeyboardButton("Aᴅᴍɪɴ Pᴀɴᴇʟ", callback_data="admin_panel")
+        btn_admin.custom_emoji = "5242625192475244017"
+        kb_buttons[1].append(btn_admin)
+
+    return text, InlineKeyboardMarkup(kb_buttons)
 
 def get_fsub_ui():
     channels = [ch for ch in config_data.get("fsub_channels", []) if ch.get("fsub", True)]
@@ -165,7 +180,7 @@ def get_fsub_ui():
 
 def get_channels_ui():
     channels = config_data.get("fsub_channels", [])
-    text = f"📢 <b>Mᴀɴᴀɢᴇ Cʜᴀɴɴᴇʟs</b>\n\nCʟɪᴄᴋ ᴏɴ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ Eᴅɪᴛ, Rᴇᴍᴏᴠᴇ, ᴏʀ Tᴏɢɢʟᴇ ɪᴛs F-Sᴜʙ sᴛᴀᴛᴜs."
+    text = f"📢 <b>Mᴀɴᴀɢᴇ Cʜᴀɴɴᴇʟs</b>\n\nCʟɪᴄᴋ ᴏɴ ᴀ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴇᴅɪᴛ ᴏʀ ᴛᴏɢɢʟᴇ ɪᴛs sᴛᴀᴛᴜs."
     btns = []
     for ch in channels:
         status_dot = "🟢" if ch.get("fsub", True) else "🔴"
@@ -241,11 +256,11 @@ async def help_menu_callback(client, callback_query):
     text = (
         f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
         f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
-        f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ's ᴄᴀᴘᴛɪᴏɴ.\n"
-        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code> ᴛᴏ ᴅᴇʟᴇᴛᴇ ɪᴛ ʟᴀᴛᴇʀ.\n\n"
-        f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ (Wɪᴘᴇ Hɪsᴛᴏʀʏ):</b>\n"
-        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴡɪᴘᴇs <b>ᴀʟʟ ᴍᴇssᴀɢᴇs</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
-        f"➜ <code>/delfrom</code> - Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ᴛʜɪs. Iᴛ ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ɴᴇᴡᴇʀ ᴍᴇssᴀɢᴇs</b> ʙᴇʟᴏᴡ ɪᴛ.\n\n"
+        f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ.\n"
+        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n\n"
+        f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ:</b>\n"
+        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴅᴇʟᴇᴛᴇs <b>ᴀʟʟ ᴍᴇssᴀɢᴇs</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
+        f"➜ <code>/delfrom</code> - (Rᴇᴘʟʏ) Dᴇʟᴇᴛᴇs ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ɴᴇᴡᴇʀ ᴍᴇssᴀɢᴇs</b> ʙᴇʟᴏᴡ ɪᴛ.\n\n"
         f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏ Fᴏʀᴍᴀᴛs:</b>\n\n"
         f"• <code>10s</code> - 10 Sᴇᴄᴏɴᴅs\n"
         f"• <code>5m</code>  - 5 Mɪɴᴜᴛᴇs\n"
@@ -281,17 +296,54 @@ async def admin_panel_callback(client, callback_query):
     
     await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(buttons), parse_mode=ParseMode.HTML)
 
+# --- USERBOT MANAGEMENT ---
 @bot.on_callback_query(filters.regex("ub_menu"))
 async def ub_menu_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     status = f"{P_CHECK} Lᴏɢɢᴇᴅ Iɴ" if bool(userbot and userbot.is_connected) else "❌ Nᴏᴛ Lᴏɢɢᴇᴅ Iɴ"
-    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: <b>{status}</b>\nLᴏɢɪɴ ᴛᴏ ᴇɴᴀʙʟᴇ ʙᴜʟᴋ-ᴅᴇʟᴇᴛɪᴏɴ."
-    kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("📝 Lᴏɢɪɴ Nᴇᴡ Aᴄᴄᴏᴜɴᴛ", callback_data="setup_userbot")],
-        [InlineKeyboardButton("🗑 Cʟᴇᴀʀ Sᴇssɪᴏɴ", callback_data="ub_clear_conf")],
-        [InlineKeyboardButton("⬅️ Bᴀᴄᴋ", callback_data="admin_panel")]
-    ])
-    await callback_query.message.edit_text(text, reply_markup=kb, parse_mode=ParseMode.HTML)
+    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: <b>{status}</b>\nCʜᴏᴏsᴇ ᴀ ʟᴏɢɪɴ ᴍᴇᴛʜᴏᴅ."
+    
+    kb_buttons = [
+        [InlineKeyboardButton("📲 Lᴏɢɪɴ ᴠɪᴀ Pʜᴏɴᴇ (OTP)", callback_data="setup_userbot_phone")],
+        [InlineKeyboardButton("🔐 Lᴏɢɪɴ ᴠɪᴀ Sᴇssɪᴏɴ Sᴛʀɪɴɢ", callback_data="setup_userbot_session")],
+    ]
+    if bool(userbot and userbot.is_connected):
+        kb_buttons.append([InlineKeyboardButton("📦 Gᴇᴛ Sᴇssɪᴏɴ Sᴛʀɪɴɢ", callback_data="get_session_string")])
+        
+    kb_buttons.append([InlineKeyboardButton("🗑 Cʟᴇᴀʀ Dᴀᴛᴀ & Lᴏɢᴏᴜᴛ", callback_data="ub_clear_conf")])
+    kb_buttons.append([InlineKeyboardButton("⬅️ Bᴀᴄᴋ", callback_data="admin_panel")])
+    
+    await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(kb_buttons), parse_mode=ParseMode.HTML)
+
+@bot.on_callback_query(filters.regex("get_session_string"))
+async def get_session_string_cb(client, callback_query):
+    if not is_bot_admin(callback_query.from_user.id): return
+    if not userbot or not userbot.is_connected:
+        return await callback_query.answer("❌ Usᴇʀʙᴏᴛ ɪs ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ!", show_alert=True)
+    
+    await callback_query.answer("Gᴇɴᴇʀᴀᴛɪɴɢ... Cʜᴇᴄᴋ ʏᴏᴜʀ Pʀɪᴠᴀᴛᴇ Mᴇssᴀɢᴇs.", show_alert=False)
+    session_string = await userbot.export_session_string()
+    
+    try:
+        await client.send_message(
+            callback_query.from_user.id, 
+            f"📦 <b>Yᴏᴜʀ Pʏʀᴏɢʀᴀᴍ Sᴇssɪᴏɴ Sᴛʀɪɴɢ:</b>\n\n<code>{session_string}</code>\n\n⚠️ <i>Kᴇᴇᴘ ᴛʜɪs sᴇᴄʀᴇᴛ ᴀɴᴅ ᴅᴏ ɴᴏᴛ sʜᴀʀᴇ ɪᴛ ᴡɪᴛʜ ᴀɴʏᴏɴᴇ!</i>", 
+            parse_mode=ParseMode.HTML
+        )
+    except Exception as e:
+        await callback_query.message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> {e}", parse_mode=ParseMode.HTML)
+
+@bot.on_callback_query(filters.regex("setup_userbot_phone"))
+async def setup_userbot_phone_cb(client, callback_query):
+    if not is_bot_admin(callback_query.from_user.id): return
+    admin_states[callback_query.from_user.id] = {"step": "ASK_API_ID"}
+    await callback_query.message.edit_text("📝 <b>Sᴛᴇᴘ 1:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>API ID</b> (Nᴜᴍʙᴇʀs ᴏɴʟʏ).\n\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
+
+@bot.on_callback_query(filters.regex("setup_userbot_session"))
+async def setup_userbot_session_cb(client, callback_query):
+    if not is_bot_admin(callback_query.from_user.id): return
+    admin_states[callback_query.from_user.id] = {"step": "ASK_SESSION_STR"}
+    await callback_query.message.edit_text("🔐 <b>Sᴇssɪᴏɴ Lᴏɢɪɴ:</b>\n\nPʟᴇᴀsᴇ sᴇɴᴅ ʏᴏᴜʀ Pʏʀᴏɢʀᴀᴍ <b>Sᴇssɪᴏɴ Sᴛʀɪɴɢ</b>.\n\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("ub_clear_conf"))
 async def ub_clear_conf_cb(client, callback_query):
@@ -314,17 +366,13 @@ async def ub_clear_yes_cb(client, callback_query):
     
     config_data.pop("api_id", None)
     config_data.pop("api_hash", None)
+    config_data.pop("session_string", None)
     await save_config()
     
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ Bᴀᴄᴋ", callback_data="ub_menu")]])
     await callback_query.message.edit_text(f"{P_CHECK} <b>Usᴇʀʙᴏᴛ Sᴇssɪᴏɴ Cʟᴇᴀʀᴇᴅ Sᴜᴄᴄᴇssғᴜʟʟʏ!</b>", reply_markup=kb, parse_mode=ParseMode.HTML)
 
-@bot.on_callback_query(filters.regex("setup_userbot"))
-async def setup_userbot_callback(client, callback_query):
-    if not is_bot_admin(callback_query.from_user.id): return
-    admin_states[callback_query.from_user.id] = {"step": "ASK_API_ID"}
-    await callback_query.message.edit_text("📝 <b>Sᴛᴇᴘ 1:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>API ID</b> (Nᴜᴍʙᴇʀs ᴏɴʟʏ).<br><br><i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
-
+# --- CHANNELS AND OTHER MENU ---
 @bot.on_callback_query(filters.regex("ch_menu"))
 async def ch_menu_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
@@ -419,6 +467,7 @@ async def manage_admins_cb(client, callback_query):
     admin_states[callback_query.from_user.id] = {"step": "ASK_ADMIN_ID"}
     await callback_query.message.edit_text(f"👮 <b>Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:</b>\n{admin_list}\n\n👉 <b>Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.</b>\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
+# --- DYNAMIC MESSAGE HANDLER FOR ADMIN STATES ---
 @bot.on_message(filters.private & ~filters.command(["start", "delall", "delfrom", "setdelay", "set_delay"]))
 async def admin_steps_handler(client: Client, message: Message):
     user_id = message.from_user.id
@@ -477,6 +526,25 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"{P_CHECK} {msg}", parse_mode=ParseMode.HTML)
         except: await message.reply_text("❌ Iɴᴠᴀʟɪᴅ ID.", parse_mode=ParseMode.HTML)
 
+    # LOGIN VIA SESSION STRING
+    elif state == "ASK_SESSION_STR":
+        try:
+            string_session = message.text.strip()
+            global userbot
+            await message.reply_text(f"{get_p_lightning()} <code>Cᴏɴɴᴇᴄᴛɪɴɢ ᴠɪᴀ Sᴇssɪᴏɴ...</code>", parse_mode=ParseMode.HTML)
+            if userbot: await userbot.disconnect()
+            userbot = Client("userbot", session_string=string_session, in_memory=True)
+            await userbot.connect()
+            
+            config_data["session_string"] = string_session
+            await save_config()
+            admin_states[user_id]["step"] = "IDLE"
+            await message.reply_text(f"{P_CHECK} <b>Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!</b>", parse_mode=ParseMode.HTML)
+        except Exception as e:
+            admin_states[user_id]["step"] = "IDLE"
+            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+
+    # LOGIN VIA PHONE
     elif state == "ASK_API_ID":
         try:
             config_data["api_id"] = int(message.text.strip())
@@ -491,7 +559,6 @@ async def admin_steps_handler(client: Client, message: Message):
         config_data["phone"] = message.text.strip()
         await message.reply_text(f"{get_p_lightning()} <code>Cᴏɴɴᴇᴄᴛɪɴɢ...</code>", parse_mode=ParseMode.HTML)
         try:
-            global userbot
             if userbot: await userbot.disconnect()
             userbot = Client("userbot", api_id=config_data["api_id"], api_hash=config_data["api_hash"], in_memory=False)
             await userbot.connect()
@@ -527,6 +594,8 @@ async def admin_steps_handler(client: Client, message: Message):
             admin_states[user_id]["step"] = "IDLE"
             await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
 
+
+# --- DELETION LOGIC ---
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
@@ -549,7 +618,7 @@ async def specific_post_delay_handler(client: Client, message: Message):
     if message.reply_to_message and is_pure_command:
         target_msg_id = message.reply_to_message.id
         asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
-        msg_to_delete = await message.reply_text(f"{P_CHECK} Rᴇᴘʟɪᴇᴅ ᴍᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b>{time_str}</b>.", parse_mode=ParseMode.HTML)
+        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Dᴇʟᴇᴛɪɴɢ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try:
             await msg_to_delete.delete()
@@ -558,7 +627,7 @@ async def specific_post_delay_handler(client: Client, message: Message):
     else:
         target_msg_id = message.id
         asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
-        msg_to_delete = await message.reply_text(f"{P_CHECK} Tʜɪs ᴘᴏsᴛ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ <b>{time_str}</b>.", parse_mode=ParseMode.HTML)
+        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Dᴇʟᴇᴛɪɴɢ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg_to_delete.delete()
         except: pass
@@ -580,7 +649,7 @@ async def ensure_userbot_admin(client: Client, message: Message, chat_id: int):
                 return True
             except: pass
         await message.reply_text(
-            f"⚠️ <b>Aᴄᴛɪᴏɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\n{ub_name} ɴᴇᴇᴅs ᴀᴅᴍɪɴ ʀɪɢʜᴛs ᴛᴏ ʙᴜʟᴋ-ᴅᴇʟᴇᴛᴇ.\n👉 <b>Mᴀɴᴜᴀʟʟʏ ᴘʀᴏᴍᴏᴛᴇ ɪᴛ.</b>",
+            f"⚠️ <b>Aᴄᴛɪᴏɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\n{ub_name} ɴᴇᴇᴅs ᴀᴅᴍɪɴ ʀɪɢʜᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs.\n👉 <b>Mᴀɴᴜᴀʟʟʏ ᴘʀᴏᴍᴏᴛᴇ ɪᴛ.</b>",
             parse_mode=ParseMode.HTML
         )
         return False
@@ -593,7 +662,7 @@ async def del_all_command(client: Client, message: Message):
     if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
     if not await ensure_userbot_admin(client, message, message.chat.id): return
 
-    status_msg = await message.reply_text(f"{get_p_lightning()} <code>Wɪᴘɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
+    status_msg = await message.reply_text(f"{get_p_lightning()} <code>Dᴇʟᴇᴛɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
     count, chunk = 0, []
     
     try:
@@ -661,6 +730,7 @@ async def del_from_command(client: Client, message: Message):
     try: await status_msg.delete()
     except: pass
 
+
 # --- RENDER WEB SERVER ---
 async def web_server():
     async def handle(request): 
@@ -683,7 +753,7 @@ async def main():
     await web_server()
     await start_userbot_if_configured()
     await bot.start()
-    print("✅ Bot is Online and Ping Web Server Started!")
+    print("✅ Bot is Online with Simple English & String Session Manager!")
     await idle()
 
 if __name__ == "__main__":
