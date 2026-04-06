@@ -32,7 +32,7 @@ clean_journals()
 # ==========================================
 API_ID = 34203777
 API_HASH = "28879e1da5422e2d7a2f2beb187d465e"
-BOT_TOKEN = "8380584487:AAE1a61nGHCC3YbBkBB3VqQ_ib6wyJ92ExI"
+BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # Updated Token
 ADMIN_ID = 8157285805  
 
 # 💎 PREMIUM EMOJIS (HTML Format for Text Messages)
@@ -416,7 +416,6 @@ async def manage_admins_cb(client, callback_query):
     admin_states[callback_query.from_user.id] = {"step": "ASK_ADMIN_ID"}
     await callback_query.message.edit_text(f"👮 **Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:**\n{admin_list}\n\n👉 **Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.**\n*(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)*", parse_mode=ParseMode.HTML)
 
-# --- DYNAMIC MESSAGE HANDLER FOR ADMIN STATES ---
 @bot.on_message(filters.private & ~filters.command(["start", "delall", "delfrom", "setdelay", "set_delay"]))
 async def admin_steps_handler(client: Client, message: Message):
     user_id = message.from_user.id
@@ -464,7 +463,7 @@ async def admin_steps_handler(client: Client, message: Message):
             target_id = int(message.text.strip())
             admins = config_data.setdefault("admins", [ADMIN_ID])
             if target_id in admins:
-                if target_id == ADMIN_ID: return await message.reply_text("❌ Yᴏᴜ ᴄᴀɴ'ᴛ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ Oᴡɴᴇʀ.")
+                if target_id == ADMIN_ID: return await message.reply_text("❌ Yᴏᴜ ᴄᴀɴ'ᴛ ʀᴇᴍᴏᴠᴇ ᴛʜᴇ Oᴡɴᴇʀ.", parse_mode=ParseMode.HTML)
                 admins.remove(target_id)
                 msg = f"➖ Rᴇᴍᴏᴠᴇᴅ Aᴅᴍɪɴ: `{target_id}`"
             else:
@@ -473,14 +472,14 @@ async def admin_steps_handler(client: Client, message: Message):
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
             await message.reply_text(f"{P_CHECK} {msg}", parse_mode=ParseMode.HTML)
-        except: await message.reply_text("❌ Iɴᴠᴀʟɪᴅ ID.")
+        except: await message.reply_text("❌ Iɴᴠᴀʟɪᴅ ID.", parse_mode=ParseMode.HTML)
 
     elif state == "ASK_API_ID":
         try:
             config_data["api_id"] = int(message.text.strip())
             admin_states[user_id]["step"] = "ASK_API_HASH"
             await message.reply_text("📝 **Sᴛᴇᴘ 2:** Sᴇɴᴅ ʏᴏᴜʀ **API HASH**.", parse_mode=ParseMode.HTML)
-        except: await message.reply_text("❌ Nᴜᴍʙᴇʀs ᴏɴʟʏ ғᴏʀ API ID.")
+        except: await message.reply_text("❌ Nᴜᴍʙᴇʀs ᴏɴʟʏ ғᴏʀ API ID.", parse_mode=ParseMode.HTML)
     elif state == "ASK_API_HASH":
         config_data["api_hash"] = message.text.strip()
         admin_states[user_id]["step"] = "ASK_PHONE"
@@ -496,10 +495,10 @@ async def admin_steps_handler(client: Client, message: Message):
             sent_code = await userbot.send_code(config_data["phone"])
             config_data["phone_code_hash"] = sent_code.phone_code_hash
             admin_states[user_id]["step"] = "ASK_OTP"
-            await message.reply_text("📩 **Sᴛᴇᴘ 4:** Sᴇɴᴅ OTP **ᴡɪᴛʜ sᴘᴀᴄᴇs**.")
+            await message.reply_text("📩 **Sᴛᴇᴘ 4:** Sᴇɴᴅ OTP **ᴡɪᴛʜ sᴘᴀᴄᴇs**.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}")
+            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
     elif state == "ASK_OTP":
         otp = message.text.replace(" ", "")
         await message.reply_text(f"{get_p_lightning()} `Vᴇʀɪғʏɪɴɢ OTP...`", parse_mode=ParseMode.HTML)
@@ -510,10 +509,10 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"{P_CHECK} **Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!**", parse_mode=ParseMode.HTML)
         except SessionPasswordNeeded:
             admin_states[user_id]["step"] = "ASK_PASSWORD"
-            await message.reply_text("🔐 **Sᴛᴇᴘ 5:** Sᴇɴᴅ ʏᴏᴜʀ **2FA Pᴀssᴡᴏʀᴅ**.")
+            await message.reply_text("🔐 **Sᴛᴇᴘ 5:** Sᴇɴᴅ ʏᴏᴜʀ **2FA Pᴀssᴡᴏʀᴅ**.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}")
+            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
     elif state == "ASK_PASSWORD":
         await message.reply_text(f"{get_p_lightning()} `Vᴇʀɪғʏɪɴɢ Pᴀssᴡᴏʀᴅ...`", parse_mode=ParseMode.HTML)
         try:
@@ -523,18 +522,14 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"{P_CHECK} **Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!**", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}")
+            await message.reply_text(f"❌ Eʀʀᴏʀ: {e}", parse_mode=ParseMode.HTML)
 
-
-# --- DELETION LOGIC ---
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
-    
     text = message.text or message.caption or ""
     match = re.search(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", text, re.IGNORECASE)
     if not match: return
-    
     time_str = match.group(1)
     delay_sec = parse_time(time_str)
     
@@ -629,7 +624,7 @@ async def del_from_command(client: Client, message: Message):
     if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
     
     if not message.reply_to_message:
-        msg = await message.reply_text("❌ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ `/delfrom`.")
+        msg = await message.reply_text("❌ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ `/delfrom`.", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg.delete(); await message.delete()
         except: pass
@@ -666,9 +661,17 @@ async def del_from_command(client: Client, message: Message):
 
 # --- RENDER WEB SERVER ---
 async def web_server():
-    async def handle(request): return web.Response(text="Bot is running!")
+    async def handle(request): 
+        return web.Response(text="Bot is running!")
+    
+    # Ping endpoint for Cron Jobs (e.g., UptimeRobot)
+    async def ping_handle(request): 
+        return web.Response(text="Pong!")
+        
     app = web.Application()
     app.router.add_get('/', handle)
+    app.router.add_get('/ping', ping_handle)
+    
     runner = web.AppRunner(app)
     await runner.setup()
     port = int(os.environ.get("PORT", 8080))
@@ -678,7 +681,7 @@ async def main():
     await web_server()
     await start_userbot_if_configured()
     await bot.start()
-    print("✅ Bot is Online!")
+    print("✅ Bot is Online and Ping Web Server Started!")
     await idle()
 
 if __name__ == "__main__":
