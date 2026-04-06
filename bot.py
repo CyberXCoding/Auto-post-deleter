@@ -18,7 +18,7 @@ from aiohttp import web
 from pyrogram import Client, filters, idle
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, ChatPrivileges
 from pyrogram.enums import ParseMode, ChatType
-from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, FloodWait, RPCError
+from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, FloodWait, RPCError, UserAlreadyParticipant
 
 # --- SAFE DATABASE CLEANUP ---
 def clean_journals():
@@ -119,27 +119,36 @@ def is_bot_admin(user_id):
 
 async def delayed_delete(chat_id, message_id, delay_seconds):
     await asyncio.sleep(delay_seconds)
+    deleted = False
     try:
-        if userbot and userbot.is_connected: await userbot.delete_messages(chat_id, message_id)
-        else: await bot.delete_messages(chat_id, message_id)
+        if userbot and userbot.is_connected: 
+            await userbot.delete_messages(chat_id, message_id)
+            deleted = True
     except FloodWait as e:
         await asyncio.sleep(e.value + 1)
-        try: await bot.delete_messages(chat_id, message_id)
+        try: 
+            await userbot.delete_messages(chat_id, message_id)
+            deleted = True
         except: pass
     except: pass
+
+    # Fallback to master bot if userbot fails or is not connected
+    if not deleted:
+        try: await bot.delete_messages(chat_id, message_id)
+        except: pass
 
 # --- UI GENERATORS ---
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
-        f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ Bᴏᴛ</b> {P_STAR}\n\n"
-        f"<i>Yᴏᴜʀ Pʀᴏғᴇssɪᴏɴᴀʟ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ. I ᴄᴀɴ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ ᴏʀɢᴀɴɪᴢᴇᴅ.</i>\n\n"
-        f"<b>⚡ Mʏ Pᴏᴡᴇʀs:</b>\n"
-        f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> I ᴄᴀɴ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴘᴏsᴛs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴀᴛ ᴏɴᴄᴇ.\n"
-        f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ, ᴀɴᴅ I ᴄᴀɴ ᴅᴇʟᴇᴛᴇ ᴇᴠᴇʀʏᴛʜɪɴɢ ғʀᴏᴍ ᴛʜᴀᴛ ᴘᴏsᴛ ᴛᴏ ᴛʜᴇ ᴇɴᴅ.\n"
-        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> I ᴄᴀɴ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛs ᴀғᴛᴇʀ ᴀ sᴇᴛ ᴛɪᴍᴇʀ.\n\n"
-        f"<b>Hᴏᴡ ᴛᴏ Usᴇ:</b>\n"
-        f"1. Mᴀᴋᴇ ᴍᴇ ᴀɴ <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
-        f"2. Cʜᴇᴄᴋ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ ᴛᴏ sᴇᴇ ʜᴏᴡ ɪᴛ ᴡᴏʀᴋs!\n\n"
+        f"{P_EPIC} <b>Pʀᴏ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
+        f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
+        f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
+        f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
+        f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ ᴀɴᴅ ʙᴇʟᴏᴡ.\n"
+        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ ᴘᴏsᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
+        f"<b>Hᴏᴡ ᴛᴏ Sᴛᴀʀᴛ:</b>\n"
+        f"1. Aᴅᴅ ᴍᴇ ᴀs <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
+        f"2. Rᴇᴀᴅ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs!\n\n"
     )
     
     if is_admin:
@@ -216,7 +225,7 @@ async def start_cmd(client: Client, message: Message):
                     f"{P_STAR} <b>Nᴇᴡ Usᴇʀ Nᴏᴛɪғɪᴄᴀᴛɪᴏɴ</b> {P_STAR}\n\n"
                     f"👤 <b>Usᴇʀ:</b> <a href='tg://user?id={user_id}'>{message.from_user.first_name}</a>\n"
                     f"🆔 <b>Usᴇʀ Iᴅ:</b> <code>{user_id}</code>\n\n"
-                    f"🌝 <b>Tᴏᴛᴀʟ Usᴇʀs Cᴏᴜɴᴛ:</b> {len(config_data['users'])}"
+                    f"🌝 <b>Tᴏᴛᴀʟ Usᴇʀs Cᴏᴜɴᴛ:</b> <code>{len(config_data['users'])}</code>"
                 ), parse_mode=ParseMode.HTML, disable_web_page_preview=True
             )
         except: pass
@@ -256,13 +265,12 @@ async def help_menu_callback(client, callback_query):
     text = (
         f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
         f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
-        f"➜ <i>Wɪᴛʜɪɴ Tᴇxᴛ:</i> Wʀɪᴛᴇ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴsɪᴅᴇ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ's ᴄᴀᴘᴛɪᴏɴ.\n"
-        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n"
-        f"<i>(I ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ɪᴛ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀғᴛᴇʀ ᴛʜᴇ ᴛɪᴍᴇ ᴘᴀssᴇs)</i>\n\n"
+        f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴsɪᴅᴇ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ.\n"
+        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n\n"
         f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ (Iɴsᴛᴀɴᴛ Cʟᴇᴀɴᴜᴘ):</b>\n"
-        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴅᴇʟᴇᴛᴇs <b>ᴇᴠᴇʀʏ ᴍᴇssᴀɢᴇ</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
-        f"➜ <code>/delfrom</code> - Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ᴛʜɪs. I ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ᴘᴏsᴛs ᴀғᴛᴇʀ ɪᴛ</b>.\n\n"
-        f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏs:</b>\n\n"
+        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴅᴇʟᴇᴛᴇs <b>ᴀʟʟ ᴍᴇssᴀɢᴇs</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
+        f"➜ <code>/delfrom</code> - Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ᴛʜɪs. I ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ɴᴇᴡᴇʀ ᴍᴇssᴀɢᴇs</b> ʙᴇʟᴏᴡ ɪᴛ.\n\n"
+        f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏ Fᴏʀᴍᴀᴛs:</b>\n\n"
         f"• <code>10s</code> - 10 Sᴇᴄᴏɴᴅs\n"
         f"• <code>5m</code>  - 5 Mɪɴᴜᴛᴇs\n"
         f"• <code>2h</code>  - 2 Hᴏᴜʀs\n"
@@ -332,7 +340,7 @@ async def get_session_string_cb(client, callback_query):
             parse_mode=ParseMode.HTML
         )
     except Exception as e:
-        await callback_query.message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> {e}", parse_mode=ParseMode.HTML)
+        await callback_query.message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 @bot.on_callback_query(filters.regex("setup_userbot_phone"))
 async def setup_userbot_phone_cb(client, callback_query):
@@ -596,7 +604,7 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 
-# --- DELETION LOGIC ---
+# --- DELETION LOGIC & SMART JOIN ---
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
@@ -637,18 +645,39 @@ async def ensure_userbot_admin(client: Client, message: Message, chat_id: int):
     try:
         ub_info = await userbot.get_me()
         ub_name = f"@{ub_info.username}" if ub_info.username else ub_info.first_name
+        
+        # Check if already admin
         try:
-            ub_member = await userbot.get_chat_member(chat_id, "me")
-            if ub_member.privileges and ub_member.privileges.can_delete_messages: return True 
+            ub_member = await client.get_chat_member(chat_id, ub_info.id)
+            if ub_member.privileges and ub_member.privileges.can_delete_messages: 
+                return True 
         except: pass 
+        
+        # Check if Master bot can promote
         bot_member = await client.get_chat_member(chat_id, "me")
         if bot_member.privileges and bot_member.privileges.can_promote_members:
             try:
+                # 1. GENERATE LINK AND MAKE USERBOT JOIN FIRST
+                chat = await client.get_chat(chat_id)
+                invite_link = chat.invite_link
+                if not invite_link:
+                    invite_link = await client.export_chat_invite_link(chat_id)
+                
+                try:
+                    await userbot.join_chat(invite_link)
+                    await asyncio.sleep(2) # Give it time to join
+                except UserAlreadyParticipant: pass
+                except Exception as join_err: print(f"Join error: {join_err}")
+
+                # 2. PROMOTE TO ADMIN
                 target = ub_info.username if ub_info.username else ub_info.id
                 await client.promote_chat_member(chat_id, target, privileges=ChatPrivileges(can_delete_messages=True))
                 await asyncio.sleep(1) 
                 return True
-            except: pass
+            except Exception as prom_err: 
+                print(f"Promotion error: {prom_err}")
+                pass
+                
         await message.reply_text(
             f"⚠️ <b>Aᴄᴛɪᴏɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\n{ub_name} ɴᴇᴇᴅs ᴀᴅᴍɪɴ ʀɪɢʜᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs.\n👉 <b>Mᴀɴᴜᴀʟʟʏ ᴘʀᴏᴍᴏᴛᴇ ɪᴛ.</b>",
             parse_mode=ParseMode.HTML
@@ -660,7 +689,7 @@ async def ensure_userbot_admin(client: Client, message: Message, chat_id: int):
 async def del_all_command(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
     global userbot
-    if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
+    if not userbot or not userbot.is_connected: return await message.reply_text("❌ <b>Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.</b>", parse_mode=ParseMode.HTML)
     if not await ensure_userbot_admin(client, message, message.chat.id): return
 
     status_msg = await message.reply_text(f"{get_p_lightning()} <code>Dᴇʟᴇᴛɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
@@ -694,10 +723,10 @@ async def del_all_command(client: Client, message: Message):
 async def del_from_command(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
     global userbot
-    if not userbot or not userbot.is_connected: return await message.reply_text("❌ Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.", parse_mode=ParseMode.HTML)
+    if not userbot or not userbot.is_connected: return await message.reply_text("❌ <b>Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.</b>", parse_mode=ParseMode.HTML)
     
     if not message.reply_to_message:
-        msg = await message.reply_text("❌ Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ <code>/delfrom</code>.", parse_mode=ParseMode.HTML)
+        msg = await message.reply_text("❌ <b>Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ</b> <code>/delfrom</code>.", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg.delete(); await message.delete()
         except: pass
@@ -753,7 +782,7 @@ async def main():
     await web_server()
     await start_userbot_if_configured()
     await bot.start()
-    print("✅ Bot is Online and Render-Ready!")
+    print("✅ Bot is Online with Smart Invite & Promotion Logic!")
     await idle()
 
 if __name__ == "__main__":
