@@ -142,7 +142,7 @@ def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
         f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ</b> {P_STAR}\n\n"
         f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
-        f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
+        f"<b>⚡Fᴇᴀᴛᴜʀᴇs:</b>\n"
         f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
         f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ ᴀɴᴅ ʙᴇʟᴏᴡ.\n"
         f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ ᴘᴏsᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
@@ -263,7 +263,7 @@ async def verify_fsub_callback(client, callback_query):
 @bot.on_callback_query(filters.regex("help_menu"))
 async def help_menu_callback(client, callback_query):
     text = (
-        f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
+        f"{P_HELP} <b>Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
         f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
         f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴsɪᴅᴇ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ.\n"
         f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n\n"
