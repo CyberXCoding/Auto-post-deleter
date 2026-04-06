@@ -32,7 +32,7 @@ clean_journals()
 # ==========================================
 API_ID = 34203777
 API_HASH = "28879e1da5422e2d7a2f2beb187d465e"
-BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # NEW TOKEN ADDED
+BOT_TOKEN = "8700857303:AAH5IMt1-qQ3aemsQVVBBZnOl1fjpJVY6Is"  # NEW TOKEN
 ADMIN_ID = 8157285805  
 
 # 💎 PREMIUM EMOJIS (HTML Format for Text Messages)
@@ -132,14 +132,14 @@ async def delayed_delete(chat_id, message_id, delay_seconds):
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
         f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ Bᴏᴛ</b> {P_STAR}\n\n"
-        f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
-        f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
-        f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
-        f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ ᴀɴᴅ ʙᴇʟᴏᴡ.\n"
-        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ ᴘᴏsᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
-        f"<b>Hᴏᴡ ᴛᴏ Sᴛᴀʀᴛ:</b>\n"
-        f"1. Aᴅᴅ ᴍᴇ ᴀs <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
-        f"2. Rᴇᴀᴅ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ ғᴏʀ ᴄᴏᴍᴍᴀɴᴅs!\n\n"
+        f"<i>Yᴏᴜʀ Pʀᴏғᴇssɪᴏɴᴀʟ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ. I ᴄᴀɴ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ ᴏʀɢᴀɴɪᴢᴇᴅ.</i>\n\n"
+        f"<b>⚡ Mʏ Pᴏᴡᴇʀs:</b>\n"
+        f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> I ᴄᴀɴ ᴅᴇʟᴇᴛᴇ ᴀʟʟ ᴘᴏsᴛs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴀᴛ ᴏɴᴄᴇ.\n"
+        f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Rᴇᴘʟʏ ᴛᴏ ᴀ ᴍᴇssᴀɢᴇ, ᴀɴᴅ I ᴄᴀɴ ᴅᴇʟᴇᴛᴇ ᴇᴠᴇʀʏᴛʜɪɴɢ ғʀᴏᴍ ᴛʜᴀᴛ ᴘᴏsᴛ ᴛᴏ ᴛʜᴇ ᴇɴᴅ.\n"
+        f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> I ᴄᴀɴ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛs ᴀғᴛᴇʀ ᴀ sᴇᴛ ᴛɪᴍᴇʀ.\n\n"
+        f"<b>Hᴏᴡ ᴛᴏ Usᴇ:</b>\n"
+        f"1. Mᴀᴋᴇ ᴍᴇ ᴀɴ <b>Aᴅᴍɪɴ</b> ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ.\n"
+        f"2. Cʜᴇᴄᴋ ᴛʜᴇ Gᴜɪᴅᴇ ʙᴇʟᴏᴡ ᴛᴏ sᴇᴇ ʜᴏᴡ ɪᴛ ᴡᴏʀᴋs!\n\n"
     )
     
     if is_admin:
@@ -256,12 +256,13 @@ async def help_menu_callback(client, callback_query):
     text = (
         f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
         f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
-        f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ.\n"
-        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n\n"
-        f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ:</b>\n"
-        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴅᴇʟᴇᴛᴇs <b>ᴀʟʟ ᴍᴇssᴀɢᴇs</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
-        f"➜ <code>/delfrom</code> - (Rᴇᴘʟʏ) Dᴇʟᴇᴛᴇs ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ɴᴇᴡᴇʀ ᴍᴇssᴀɢᴇs</b> ʙᴇʟᴏᴡ ɪᴛ.\n\n"
-        f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏ Fᴏʀᴍᴀᴛs:</b>\n\n"
+        f"➜ <i>Wɪᴛʜɪɴ Tᴇxᴛ:</i> Wʀɪᴛᴇ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴsɪᴅᴇ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ's ᴄᴀᴘᴛɪᴏɴ.\n"
+        f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n"
+        f"<i>(I ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ɪᴛ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀғᴛᴇʀ ᴛʜᴇ ᴛɪᴍᴇ ᴘᴀssᴇs)</i>\n\n"
+        f"<b>2️⃣ Bᴜʟᴋ Dᴇʟᴇᴛɪᴏɴ (Iɴsᴛᴀɴᴛ Cʟᴇᴀɴᴜᴘ):</b>\n"
+        f"➜ <code>/delall</code> - Cᴏᴍᴘʟᴇᴛᴇʟʏ ᴅᴇʟᴇᴛᴇs <b>ᴇᴠᴇʀʏ ᴍᴇssᴀɢᴇ</b> ɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ.\n"
+        f"➜ <code>/delfrom</code> - Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ᴛʜɪs. I ᴡɪʟʟ ᴅᴇʟᴇᴛᴇ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴀɴᴅ <b>ᴀʟʟ ᴘᴏsᴛs ᴀғᴛᴇʀ ɪᴛ</b>.\n\n"
+        f"<blockquote expandable><b>{get_p_lightning()} Sᴜᴘᴘᴏʀᴛᴇᴅ Dᴇʟᴀʏs:</b>\n\n"
         f"• <code>10s</code> - 10 Sᴇᴄᴏɴᴅs\n"
         f"• <code>5m</code>  - 5 Mɪɴᴜᴛᴇs\n"
         f"• <code>2h</code>  - 2 Hᴏᴜʀs\n"
@@ -300,8 +301,8 @@ async def admin_panel_callback(client, callback_query):
 @bot.on_callback_query(filters.regex("ub_menu"))
 async def ub_menu_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
-    status = f"{P_CHECK} Lᴏɢɢᴇᴅ Iɴ" if bool(userbot and userbot.is_connected) else "❌ Nᴏᴛ Lᴏɢɢᴇᴅ Iɴ"
-    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: <b>{status}</b>\nCʜᴏᴏsᴇ ᴀ ʟᴏɢɪɴ ᴍᴇᴛʜᴏᴅ."
+    status = f"{P_CHECK} <b>Lᴏɢɢᴇᴅ Iɴ</b>" if bool(userbot and userbot.is_connected) else "❌ <b>Nᴏᴛ Lᴏɢɢᴇᴅ Iɴ</b>"
+    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: {status}\nCʜᴏᴏsᴇ ᴀ ʟᴏɢɪɴ ᴍᴇᴛʜᴏᴅ."
     
     kb_buttons = [
         [InlineKeyboardButton("📲 Lᴏɢɪɴ ᴠɪᴀ Pʜᴏɴᴇ (OTP)", callback_data="setup_userbot_phone")],
@@ -500,12 +501,12 @@ async def admin_steps_handler(client: Client, message: Message):
             config_data["fsub_image"] = None
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"{P_CHECK} Fsᴜʙ Iᴍᴀɢᴇ ʀᴇᴍᴏᴠᴇᴅ.", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"{P_CHECK} <b>Fsᴜʙ Iᴍᴀɢᴇ ʀᴇᴍᴏᴠᴇᴅ.</b>", parse_mode=ParseMode.HTML)
         elif message.photo:
             config_data["fsub_image"] = message.photo.file_id
             await save_config()
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"{P_CHECK} Fsᴜʙ Iᴍᴀɢᴇ Sᴀᴠᴇᴅ!", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"{P_CHECK} <b>Fsᴜʙ Iᴍᴀɢᴇ Sᴀᴠᴇᴅ!</b>", parse_mode=ParseMode.HTML)
         else:
             await message.reply_text("❌ Pʟᴇᴀsᴇ sᴇɴᴅ ᴀ ᴘʜᴏᴛᴏ.", parse_mode=ParseMode.HTML)
 
@@ -542,7 +543,7 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"{P_CHECK} <b>Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!</b>", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
     # LOGIN VIA PHONE
     elif state == "ASK_API_ID":
@@ -550,7 +551,7 @@ async def admin_steps_handler(client: Client, message: Message):
             config_data["api_id"] = int(message.text.strip())
             admin_states[user_id]["step"] = "ASK_API_HASH"
             await message.reply_text("📝 <b>Sᴛᴇᴘ 2:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>API HASH</b>.", parse_mode=ParseMode.HTML)
-        except: await message.reply_text("❌ Nᴜᴍʙᴇʀs ᴏɴʟʏ ғᴏʀ API ID.", parse_mode=ParseMode.HTML)
+        except: await message.reply_text("❌ <b>Nᴜᴍʙᴇʀs ᴏɴʟʏ ғᴏʀ API ID.</b>", parse_mode=ParseMode.HTML)
     elif state == "ASK_API_HASH":
         config_data["api_hash"] = message.text.strip()
         admin_states[user_id]["step"] = "ASK_PHONE"
@@ -568,7 +569,7 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text("📩 <b>Sᴛᴇᴘ 4:</b> Sᴇɴᴅ OTP <b>ᴡɪᴛʜ sᴘᴀᴄᴇs</b>.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
     elif state == "ASK_OTP":
         otp = message.text.replace(" ", "")
         await message.reply_text(f"{get_p_lightning()} <code>Vᴇʀɪғʏɪɴɢ OTP...</code>", parse_mode=ParseMode.HTML)
@@ -582,7 +583,7 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text("🔐 <b>Sᴛᴇᴘ 5:</b> Sᴇɴᴅ ʏᴏᴜʀ <b>2FA Pᴀssᴡᴏʀᴅ</b>.", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
     elif state == "ASK_PASSWORD":
         await message.reply_text(f"{get_p_lightning()} <code>Vᴇʀɪғʏɪɴɢ Pᴀssᴡᴏʀᴅ...</code>", parse_mode=ParseMode.HTML)
         try:
@@ -592,7 +593,7 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"{P_CHECK} <b>Lᴏɢɪɴ Sᴜᴄᴄᴇssғᴜʟ!</b>", parse_mode=ParseMode.HTML)
         except Exception as e:
             admin_states[user_id]["step"] = "IDLE"
-            await message.reply_text(f"❌ Eʀʀᴏʀ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+            await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 
 # --- DELETION LOGIC ---
@@ -618,7 +619,7 @@ async def specific_post_delay_handler(client: Client, message: Message):
     if message.reply_to_message and is_pure_command:
         target_msg_id = message.reply_to_message.id
         asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
-        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Dᴇʟᴇᴛɪɴɢ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
+        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Mᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try:
             await msg_to_delete.delete()
@@ -627,7 +628,7 @@ async def specific_post_delay_handler(client: Client, message: Message):
     else:
         target_msg_id = message.id
         asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
-        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Dᴇʟᴇᴛɪɴɢ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
+        msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Pᴏsᴛ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg_to_delete.delete()
         except: pass
@@ -680,14 +681,14 @@ async def del_all_command(client: Client, message: Message):
             try: await userbot.delete_messages(message.chat.id, chunk)
             except: pass
             
-        await status_msg.edit_text(f"{P_CHECK} <b>Dᴏɴᴇ!</b> Dᴇʟᴇᴛᴇᴅ {count} ᴍᴇssᴀɢᴇs.", parse_mode=ParseMode.HTML)
+        await status_msg.edit_text(f"{P_CHECK} <b>Dᴏɴᴇ!</b> Dᴇʟᴇᴛᴇᴅ <b>{count}</b> ᴍᴇssᴀɢᴇs.", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try:
             await status_msg.delete()
             await message.delete()
         except: pass
     except Exception as e:
-        await status_msg.edit_text(f"⚠️ Sᴛᴏᴘᴘᴇᴅ: <code>{e}</code>", parse_mode=ParseMode.HTML)
+        await status_msg.edit_text(f"⚠️ <b>Sᴛᴏᴘᴘᴇᴅ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 @bot.on_message(filters.command("delfrom") & (filters.group | filters.channel))
 async def del_from_command(client: Client, message: Message):
@@ -725,7 +726,7 @@ async def del_from_command(client: Client, message: Message):
         try: await userbot.delete_messages(message.chat.id, chunk)
         except: pass
         
-    await status_msg.edit_text(f"{P_CHECK} <b>Dᴏɴᴇ!</b> Dᴇʟᴇᴛᴇᴅ {count} ᴍᴇssᴀɢᴇs.", parse_mode=ParseMode.HTML)
+    await status_msg.edit_text(f"{P_CHECK} <b>Dᴏɴᴇ!</b> Dᴇʟᴇᴛᴇᴅ <b>{count}</b> ᴍᴇssᴀɢᴇs.", parse_mode=ParseMode.HTML)
     await asyncio.sleep(5)
     try: await status_msg.delete()
     except: pass
@@ -736,7 +737,6 @@ async def web_server():
     async def handle(request): 
         return web.Response(text="Bot is running!")
     
-    # Ping endpoint for Cron Jobs (e.g., UptimeRobot)
     async def ping_handle(request): 
         return web.Response(text="Pong!")
         
@@ -753,7 +753,7 @@ async def main():
     await web_server()
     await start_userbot_if_configured()
     await bot.start()
-    print("✅ Bot is Online with Simple English & String Session Manager!")
+    print("✅ Bot is Online and Render-Ready!")
     await idle()
 
 if __name__ == "__main__":
