@@ -131,7 +131,7 @@ async def delayed_delete(chat_id, message_id, delay_seconds):
 # --- UI GENERATORS ---
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
-        f"{P_EPIC} <b>Pʀᴏ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
+        f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ Bᴏᴛ</b> {P_STAR}\n\n"
         f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
         f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
         f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
