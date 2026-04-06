@@ -18,7 +18,7 @@ from aiohttp import web
 from pyrogram import Client, filters, idle
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, ChatPrivileges
 from pyrogram.enums import ParseMode, ChatType
-from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, FloodWait, RPCError, UserAlreadyParticipant
+from pyrogram.errors import SessionPasswordNeeded, PhoneCodeInvalid, PhoneCodeExpired, FloodWait, RPCError, UserAlreadyParticipant, ChatAdminRequired
 
 # --- SAFE DATABASE CLEANUP ---
 def clean_journals():
@@ -117,32 +117,86 @@ async def is_user_admin_safe(client: Client, message: Message):
 def is_bot_admin(user_id):
     return user_id in config_data.get("admins", [])
 
-async def delayed_delete(chat_id, message_id, delay_seconds):
+# --- AUTO PROMOTE SMART LOGIC ---
+async def ensure_userbot_admin(client: Client, chat_id: int, message: Message = None):
+    """Ensure userbot is admin. Uses Invite Link first, then promotes."""
+    try:
+        if not userbot or not userbot.is_connected: return False
+        ub_info = await userbot.get_me()
+        
+        # 1. Check if already admin
+        try:
+            ub_member = await client.get_chat_member(chat_id, ub_info.id)
+            if ub_member.privileges and ub_member.privileges.can_delete_messages: 
+                return True 
+        except: pass 
+        
+        # 2. Try to promote (Generate link -> Join -> Promote)
+        bot_member = await client.get_chat_member(chat_id, "me")
+        if bot_member.privileges and bot_member.privileges.can_promote_members:
+            try:
+                chat = await client.get_chat(chat_id)
+                invite_link = chat.invite_link
+                if not invite_link:
+                    invite_link = await client.export_chat_invite_link(chat_id)
+                
+                try:
+                    await userbot.join_chat(invite_link)
+                    await asyncio.sleep(2) # Buffer to sync join
+                except UserAlreadyParticipant: pass
+                except Exception as join_err: print(f"Join error: {join_err}")
+
+                target = ub_info.username if ub_info.username else ub_info.id
+                await client.promote_chat_member(chat_id, target, privileges=ChatPrivileges(can_delete_messages=True))
+                await asyncio.sleep(1) 
+                return True
+            except Exception as prom_err: 
+                print(f"Promotion error: {prom_err}")
+                pass
+                
+        # 3. Failed, ask for manual promotion
+        if message:
+            await message.reply_text(
+                f"⚠️ <b>Aᴄᴛɪᴏɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\nI ɴᴇᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛs (wɪᴛʜ Iɴᴠɪᴛᴇ & Pʀᴏᴍᴏᴛᴇ ᴘᴇʀᴍɪssɪᴏɴs) ᴛᴏ ᴀᴜᴛᴏ-ᴀᴅᴅ ᴛʜᴇ ᴅᴇʟᴇᴛɪᴏɴ ᴀᴄᴄᴏᴜɴᴛ.\n👉 <b>Mᴀɴᴜᴀʟʟʏ ᴘʀᴏᴍᴏᴛᴇ ɪᴛ.</b>",
+                parse_mode=ParseMode.HTML
+            )
+        return False
+    except: return False
+
+async def delayed_delete(client_bot: Client, chat_id, message_id, delay_seconds):
     await asyncio.sleep(delay_seconds)
     deleted = False
-    try:
-        if userbot and userbot.is_connected: 
+    
+    if userbot and userbot.is_connected:
+        try:
             await userbot.delete_messages(chat_id, message_id)
             deleted = True
-    except FloodWait as e:
-        await asyncio.sleep(e.value + 1)
-        try: 
-            await userbot.delete_messages(chat_id, message_id)
-            deleted = True
+        except ChatAdminRequired:
+            # Smart Auto-Heal: Re-promote userbot if admin rights were lost!
+            if await ensure_userbot_admin(client_bot, chat_id):
+                try:
+                    await userbot.delete_messages(chat_id, message_id)
+                    deleted = True
+                except: pass
+        except FloodWait as e:
+            await asyncio.sleep(e.value + 1)
+            try: 
+                await userbot.delete_messages(chat_id, message_id)
+                deleted = True
+            except: pass
         except: pass
-    except: pass
 
-    # Fallback to master bot if userbot fails or is not connected
+    # Fallback to master bot if userbot completely failed
     if not deleted:
-        try: await bot.delete_messages(chat_id, message_id)
+        try: await client_bot.delete_messages(chat_id, message_id)
         except: pass
 
 # --- UI GENERATORS ---
 def get_start_menu(bot_username, is_userbot_connected, is_admin):
     text = (
-        f"{P_EPIC} <b>Aᴜᴛᴏ Pᴏsᴛ Dᴇʟᴇᴛᴇʀ</b> {P_STAR}\n\n"
+        f"{P_EPIC} <b>Pʀᴏ Cʜᴀɴɴᴇʟ Mᴀɴᴀɢᴇʀ</b> {P_STAR}\n\n"
         f"<i>I ᴀᴍ ᴀ ᴘʀᴏғᴇssɪᴏɴᴀʟ ʙᴏᴛ ᴛᴏ ᴋᴇᴇᴘ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟs ᴄʟᴇᴀɴ ᴀɴᴅ sᴀғᴇ.</i>\n\n"
-        f"<b>⚡Fᴇᴀᴛᴜʀᴇs:</b>\n"
+        f"<b>⚡ Mʏ Fᴇᴀᴛᴜʀᴇs:</b>\n"
         f"➜ <b>Bᴜʟᴋ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴀʟʟ ᴍᴇssᴀɢᴇs ɪɴ ʏᴏᴜʀ ᴄʜᴀɴɴᴇʟ ᴇᴀsɪʟʏ.\n"
         f"➜ <b>Sᴍᴀʀᴛ Dᴇʟᴇᴛᴇ:</b> Dᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs ғʀᴏᴍ ᴀ sᴘᴇᴄɪғɪᴄ ᴘᴏsᴛ ᴀɴᴅ ʙᴇʟᴏᴡ.\n"
         f"➜ <b>Aᴜᴛᴏ Dᴇʟᴇᴛᴇ:</b> Sᴇᴛ ᴀ ᴛɪᴍᴇʀ ᴏɴ ᴘᴏsᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴛʜᴇᴍ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.\n\n"
@@ -165,7 +219,6 @@ def get_start_menu(bot_username, is_userbot_connected, is_admin):
         [btn_help]
     ]
 
-    # ONLY SHOW ADMIN PANEL TO ADMINS
     if is_admin:
         btn_admin = InlineKeyboardButton("Aᴅᴍɪɴ Pᴀɴᴇʟ", callback_data="admin_panel")
         btn_admin.custom_emoji = "5242625192475244017"
@@ -197,17 +250,6 @@ def get_channels_ui():
     btns.append([InlineKeyboardButton("➕ Aᴅᴅ Nᴇᴡ Cʜᴀɴɴᴇʟ", callback_data="ch_add")])
     btns.append([InlineKeyboardButton("⬅️ Bᴀᴄᴋ ᴛᴏ Aᴅᴍɪɴ", callback_data="admin_panel")])
     return text, InlineKeyboardMarkup(btns)
-
-async def check_user_fsub(client, user_id):
-    channels = [ch for ch in config_data.get("fsub_channels", []) if ch.get("fsub", True)]
-    if not channels: return True
-    if is_bot_admin(user_id): return True 
-    for ch in channels:
-        try:
-            member = await client.get_chat_member(ch["id"], user_id)
-            if member.status.name in ["LEFT", "KICKED", "RESTRICTED", "BANNED"]: return False
-        except: return False
-    return True
 
 # --- COMMAND HANDLERS ---
 @bot.on_message(filters.command("start") & filters.private)
@@ -263,7 +305,7 @@ async def verify_fsub_callback(client, callback_query):
 @bot.on_callback_query(filters.regex("help_menu"))
 async def help_menu_callback(client, callback_query):
     text = (
-        f"{P_HELP} <b>Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
+        f"{P_HELP} <b>Cᴏᴍᴘʀᴇʜᴇɴsɪᴠᴇ Gᴜɪᴅᴇ</b> {P_DIAMOND}\n\n"
         f"<b>1️⃣ Aᴜᴛᴏ-Dᴇʟᴇᴛᴇ Sᴘᴇᴄɪғɪᴄ Pᴏsᴛs:</b>\n"
         f"➜ <i>Iɴsɪᴅᴇ Tᴇxᴛ:</i> Aᴅᴅ <code>/setdelay 10m</code> ᴀɴʏᴡʜᴇʀᴇ ɪɴsɪᴅᴇ ʏᴏᴜʀ ɴᴇᴡ ᴘᴏsᴛ.\n"
         f"➜ <i>Vɪᴀ Rᴇᴘʟʏ:</i> Rᴇᴘʟʏ ᴛᴏ ᴀɴʏ ᴇxɪsᴛɪɴɢ ᴘᴏsᴛ ᴡɪᴛʜ <code>/setdelay 1h</code>.\n\n"
@@ -310,7 +352,7 @@ async def admin_panel_callback(client, callback_query):
 async def ub_menu_callback(client, callback_query):
     if not is_bot_admin(callback_query.from_user.id): return
     status = f"{P_CHECK} <b>Lᴏɢɢᴇᴅ Iɴ</b>" if bool(userbot and userbot.is_connected) else "❌ <b>Nᴏᴛ Lᴏɢɢᴇᴅ Iɴ</b>"
-    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: {status}\nCʜᴏᴏsᴇ ᴀ ʟᴏɢɪɴ ᴍᴇᴛʜᴏᴅ."
+    text = f"🔑 <b>Usᴇʀʙᴏᴛ Mᴀɴᴀɢᴇᴍᴇɴᴛ</b>\n\nSᴛᴀᴛᴜs: {status}\nCʜᴏᴏs ᴀ ʟᴏɢɪɴ ᴍᴇᴛʜᴏᴅ."
     
     kb_buttons = [
         [InlineKeyboardButton("📲 Lᴏɢɪɴ ᴠɪᴀ Pʜᴏɴᴇ (OTP)", callback_data="setup_userbot_phone")],
@@ -476,7 +518,6 @@ async def manage_admins_cb(client, callback_query):
     admin_states[callback_query.from_user.id] = {"step": "ASK_ADMIN_ID"}
     await callback_query.message.edit_text(f"👮 <b>Cᴜʀʀᴇɴᴛ Aᴅᴍɪɴs:</b>\n{admin_list}\n\n👉 <b>Sᴇɴᴅ ᴀ Tᴇʟᴇɢʀᴀᴍ ID ᴛᴏ Aᴅᴅ/Rᴇᴍᴏᴠᴇ ᴛʜᴇᴍ.</b>\n<i>(Sᴇɴᴅ /start ᴛᴏ ᴄᴀɴᴄᴇʟ)</i>", parse_mode=ParseMode.HTML)
 
-# --- DYNAMIC MESSAGE HANDLER FOR ADMIN STATES ---
 @bot.on_message(filters.private & ~filters.command(["start", "delall", "delfrom", "setdelay", "set_delay"]))
 async def admin_steps_handler(client: Client, message: Message):
     user_id = message.from_user.id
@@ -604,10 +645,14 @@ async def admin_steps_handler(client: Client, message: Message):
             await message.reply_text(f"❌ <b>Eʀʀᴏʀ:</b> <code>{e}</code>", parse_mode=ParseMode.HTML)
 
 
-# --- DELETION LOGIC & SMART JOIN ---
+# --- DELETION LOGIC ---
 @bot.on_message((filters.group | filters.channel) & filters.regex(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", flags=re.IGNORECASE))
 async def specific_post_delay_handler(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
+    
+    # Pre-emptively ensure userbot is admin before the task is scheduled
+    await ensure_userbot_admin(client, message.chat.id, message)
+
     text = message.text or message.caption or ""
     match = re.search(r"/(?:setdelay|set_delay)\s+(\d+[smhd]?)", text, re.IGNORECASE)
     if not match: return
@@ -626,7 +671,7 @@ async def specific_post_delay_handler(client: Client, message: Message):
     
     if message.reply_to_message and is_pure_command:
         target_msg_id = message.reply_to_message.id
-        asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
+        asyncio.create_task(delayed_delete(client, message.chat.id, target_msg_id, delay_sec))
         msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Mᴇssᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try:
@@ -635,62 +680,18 @@ async def specific_post_delay_handler(client: Client, message: Message):
         except: pass
     else:
         target_msg_id = message.id
-        asyncio.create_task(delayed_delete(message.chat.id, target_msg_id, delay_sec))
+        asyncio.create_task(delayed_delete(client, message.chat.id, target_msg_id, delay_sec))
         msg_to_delete = await message.reply_text(f"{P_CHECK} <b>Pᴏsᴛ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ {time_str}...</b>", parse_mode=ParseMode.HTML)
         await asyncio.sleep(5)
         try: await msg_to_delete.delete()
         except: pass
-
-async def ensure_userbot_admin(client: Client, message: Message, chat_id: int):
-    try:
-        ub_info = await userbot.get_me()
-        ub_name = f"@{ub_info.username}" if ub_info.username else ub_info.first_name
-        
-        # Check if already admin
-        try:
-            ub_member = await client.get_chat_member(chat_id, ub_info.id)
-            if ub_member.privileges and ub_member.privileges.can_delete_messages: 
-                return True 
-        except: pass 
-        
-        # Check if Master bot can promote
-        bot_member = await client.get_chat_member(chat_id, "me")
-        if bot_member.privileges and bot_member.privileges.can_promote_members:
-            try:
-                # 1. GENERATE LINK AND MAKE USERBOT JOIN FIRST
-                chat = await client.get_chat(chat_id)
-                invite_link = chat.invite_link
-                if not invite_link:
-                    invite_link = await client.export_chat_invite_link(chat_id)
-                
-                try:
-                    await userbot.join_chat(invite_link)
-                    await asyncio.sleep(2) # Give it time to join
-                except UserAlreadyParticipant: pass
-                except Exception as join_err: print(f"Join error: {join_err}")
-
-                # 2. PROMOTE TO ADMIN
-                target = ub_info.username if ub_info.username else ub_info.id
-                await client.promote_chat_member(chat_id, target, privileges=ChatPrivileges(can_delete_messages=True))
-                await asyncio.sleep(1) 
-                return True
-            except Exception as prom_err: 
-                print(f"Promotion error: {prom_err}")
-                pass
-                
-        await message.reply_text(
-            f"⚠️ <b>Aᴄᴛɪᴏɴ Rᴇǫᴜɪʀᴇᴅ</b>\n\n{ub_name} ɴᴇᴇᴅs ᴀᴅᴍɪɴ ʀɪɢʜᴛs ᴛᴏ ᴅᴇʟᴇᴛᴇ ᴍᴇssᴀɢᴇs.\n👉 <b>Mᴀɴᴜᴀʟʟʏ ᴘʀᴏᴍᴏᴛᴇ ɪᴛ.</b>",
-            parse_mode=ParseMode.HTML
-        )
-        return False
-    except: return False
 
 @bot.on_message(filters.command("delall") & (filters.group | filters.channel))
 async def del_all_command(client: Client, message: Message):
     if not await is_user_admin_safe(client, message): return
     global userbot
     if not userbot or not userbot.is_connected: return await message.reply_text("❌ <b>Usᴇʀʙᴏᴛ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.</b>", parse_mode=ParseMode.HTML)
-    if not await ensure_userbot_admin(client, message, message.chat.id): return
+    if not await ensure_userbot_admin(client, message.chat.id, message): return
 
     status_msg = await message.reply_text(f"{get_p_lightning()} <code>Dᴇʟᴇᴛɪɴɢ Aʟʟ Mᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
     count, chunk = 0, []
@@ -703,7 +704,16 @@ async def del_all_command(client: Client, message: Message):
                 try:
                     await userbot.delete_messages(message.chat.id, chunk)
                     await asyncio.sleep(1.5)
-                except FloodWait as e: await asyncio.sleep(e.value + 1)
+                except ChatAdminRequired:
+                    # Smart Auto-Heal: Lost admin midway, try to re-promote
+                    if await ensure_userbot_admin(client, message.chat.id):
+                        try: await userbot.delete_messages(message.chat.id, chunk)
+                        except: pass
+                    await asyncio.sleep(1.5)
+                except FloodWait as e: 
+                    await asyncio.sleep(e.value + 1)
+                    try: await userbot.delete_messages(message.chat.id, chunk)
+                    except: pass
                 except: pass
                 chunk = []
         if chunk:
@@ -732,7 +742,7 @@ async def del_from_command(client: Client, message: Message):
         except: pass
         return
         
-    if not await ensure_userbot_admin(client, message, message.chat.id): return
+    if not await ensure_userbot_admin(client, message.chat.id, message): return
     status_msg = await message.reply_text(f"{get_p_lightning()} <code>Dᴇʟᴇᴛɪɴɢ sᴇʟᴇᴄᴛᴇᴅ ᴍᴇssᴀɢᴇs...</code>", parse_mode=ParseMode.HTML)
     
     ids_to_delete = list(range(message.reply_to_message.id, message.id + 1))
@@ -745,9 +755,16 @@ async def del_from_command(client: Client, message: Message):
             try:
                 await userbot.delete_messages(message.chat.id, chunk)
                 await asyncio.sleep(1.5)
+            except ChatAdminRequired:
+                # Smart Auto-Heal: Lost admin midway, try to re-promote
+                if await ensure_userbot_admin(client, message.chat.id):
+                    try: await userbot.delete_messages(message.chat.id, chunk)
+                    except: pass
+                await asyncio.sleep(1.5)
             except FloodWait as e:
                 await asyncio.sleep(e.value + 1)
-                await userbot.delete_messages(message.chat.id, chunk)
+                try: await userbot.delete_messages(message.chat.id, chunk)
+                except: pass
             except: pass
             chunk = []
             
